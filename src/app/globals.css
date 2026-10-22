@@ -1,1 +1,109 @@
 @import "tailwindcss";
+
+/* Design tokens. Paper and ink for the shop, one bold cobalt for the brand (reads as glass and cold water,
+   and sits crisply next to brushed steel). */
+@theme {
+  --color-paper: #f9f8f6;
+  --color-paper-2: #f1efeb;
+  --color-paper-3: #e7e3dc;
+  --color-ink: #151413;
+  --color-ink-2: #3b3935;
+  --color-mute: #6b675f;
+  --color-brand: #2341d6;
+  --color-brand-2: #1b33b2;
+  --color-ice: #e3e8f8;
+  --color-line: rgb(21 20 19 / 0.08);
+  --color-line-2: rgb(21 20 19 / 0.16);
+  --color-danger: #a33a2c;
+
+  --shadow-soft: 0 1px 2px rgb(21 20 19 / 0.04), 0 18px 40px -20px rgb(21 20 19 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(21 20 19 / 0.04), 0 32px 64px -28px rgb(21 20 19 / 0.28);
+  --shadow-panel: -32px 0 80px -32px rgb(21 20 19 / 0.22);
+
+  --ease-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-spin-slow: spin 24s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), ui-serif, Georgia, serif;
+  --font-display: var(--font-archivo), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 4rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    background: var(--color-brand);
+    color: #fff;
+  }
+  /* Ink ring on paper; cobalt surfaces switch it to white (see .on-brand). */
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  summary {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  /* Page gutter + max width shared by every section. */
+  .shell {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 1440px;
+    padding-inline: 1.25rem;
+  }
+  @media (width >= 40rem) {
+    .shell {
+      padding-inline: 2rem;
+    }
+  }
+  @media (width >= 64rem) {
+    .shell {
+      padding-inline: 3rem;
+    }
+  }
+  /* Small monospace label for meta text: sizes, counts, prices, notes. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-mute);
+  }
+  /* Poster type: heavy grotesk caps, set tight. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: 88%;
+    text-transform: uppercase;
+    letter-spacing: -0.025em;
+    line-height: 0.84;
+  }
+}
