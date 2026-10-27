@@ -12,89 +12,54 @@ import {
   type MotionValue,
   type Variants,
 } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, MessageCircle, Pause, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, MessageCircle, Pause, Play } from "lucide-react";
+import Link from "next/link";
 import { useRef, useState } from "react";
-import { ProductArt } from "@/components/art/ProductArt";
+import { GroupArt } from "@/components/art/ProductArt";
 import { useCart } from "@/components/cart/CartProvider";
-import { useAddFeedback } from "@/components/shop/ProductCard";
-import { useShopFilter } from "@/components/shop/ShopFilter";
 import { buttonClass } from "@/components/ui/primitives";
-import { FREE_SHIPPING_FROM, formatPrice } from "@/lib/cart";
 import { CHAT_LINK } from "@/lib/contact";
 import { EASE } from "@/lib/motion";
-import { CATEGORIES, PRODUCT_BY_ID, PRODUCTS } from "@/lib/products";
-import type { ArtView, Product } from "@/lib/types";
+import { COLLECTION_BY_ID, collectionHref, type Collection } from "@/lib/products";
+import type { Category } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface Slide {
-  product: Product;
-  view: ArtView;
-  /** Optical size on the stage: the fit crop enlarges squat pieces, so pull them back toward the flask's mass. */
-  scale?: number;
-  /** Display word + italic line either side of the product; together they read as one phrase. */
+  collection: Collection;
+  /** Display word + italic line either side of the group; together they name the collection. */
   left: [string, string];
   right: [string, string];
-  note: string;
 }
 
-const slide = (id: string, s: Omit<Slide, "product">): Slide => {
-  const product = PRODUCT_BY_ID.get(id);
-  if (!product) throw new Error(`Unknown product: ${id}`);
-  return { product, ...s };
+const slide = (id: Category, left: [string, string], right: [string, string]): Slide => {
+  const collection = COLLECTION_BY_ID.get(id);
+  if (!collection) throw new Error(`Unknown collection: ${id}`);
+  return { collection, left, right };
 };
 
-// Every claim here comes from lib/products.
+// One slide per collection, in the client's order. Every claim here comes from lib/products.
 const SLIDES: Slide[] = [
-  slide("thermal-flask-750", {
-    view: "front",
-    left: ["Hot", "chai for 12 hours"],
-    right: ["Cold", "water for 24 hours"],
-    note: "Double-wall vacuum steel with a leak-proof screw cap. The outside never sweats.",
-  }),
-  slide("glass-mug", {
-    view: "alt",
-    scale: 0.8,
-    left: ["Doodh", "in a clear glass mug"],
-    right: ["Patti", "takes boiling water"],
-    note: "Borosilicate glass with a thick handle that stays cool. Microwave and dishwasher safe.",
-  }),
-  slide("rib-tumbler", {
-    view: "front",
-    scale: 0.88,
-    left: ["Juice", "water or iced coffee"],
-    right: ["Glass", "ribbed for a sure grip"],
-    note: "Borosilicate glass for hot and cold drinks, with a thick, steady base. Dishwasher safe.",
-  }),
-  slide("glass-serving-bowl", {
-    view: "front",
-    scale: 0.78,
-    left: ["Raita", "salad or fruit"],
-    right: ["Bowl", "wide, clear, 1.4 litres"],
-    note: "Thick-walled tempered glass, steady enough to pass around the table. Microwave safe.",
-  }),
-  slide("commuter-bottle", {
-    view: "front",
-    left: ["Slim", "420 ml, insulated"],
-    right: ["Light", "260 g, with a carry loop"],
-    note: "Cold for 18 hours, hot for 8. The wide mouth takes ice cubes and is easy to clean.",
-  }),
-  slide("tea-cup-saucer", {
-    view: "alt",
-    scale: 0.8,
-    left: ["Green", "tea, or chai"],
-    right: ["Tea", "see the colour of the brew"],
-    note: "Clear borosilicate cups and saucers with a comfortable handle. Dishwasher safe.",
-  }),
+  slide("tea", ["Tea", "cups, saucers and teapots"], ["Wares", "in clear, heat-proof glass"]),
+  slide("drink", ["Drink", "water, juice or lemonade"], ["Wares", "tumblers, carafes, coupes"]),
+  slide("dinner", ["Dinner", "for the whole dawat"], ["Wares", "plates, bowls and full sets"]),
+  slide("kettles", ["Chai", "starts with a whistle"], ["Kettles", "in steel and five colours"]),
+  slide("flasks", ["Flasks", "chai hot for 12 hours"], ["Bottles", "in five colours"]),
 ];
 
 const SLIDE_MS = 6500;
 
-const SHOP_BY = CATEGORIES.flatMap((c) => {
-  const items = PRODUCTS.filter((p) => p.category === c.id);
-  return items.length
-    ? [{ id: c.id, label: c.label, count: items.length, from: Math.min(...items.map((p) => p.price)) }]
-    : [];
-});
+/**
+ * Type sizes for a slide: as big as the clamps allow, but never wider than the column (a size container),
+ * and the same on both sides so the two poster words share a baseline.
+ */
+const typeSizes = (s: Slide) => {
+  const letters = Math.max(s.left[0].length, s.right[0].length);
+  const chars = Math.max(s.left[1].length, s.right[1].length);
+  return {
+    word: { fontSize: `min(clamp(5rem, 8.6vw, 9.5rem), calc(100cqi / ${(letters * 0.68).toFixed(2)}))` },
+    line: { fontSize: `min(clamp(1.375rem, 2.6vw, 2.5rem), calc(100cqi / ${(chars * 0.45).toFixed(2)}))` },
+  };
+};
 
 const WORD: Variants = {
   enter: (d: number) => ({ y: d > 0 ? "104%" : "-104%" }),
@@ -102,10 +67,10 @@ const WORD: Variants = {
   exit: (d: number) => ({ y: d > 0 ? "-104%" : "104%" }),
 };
 
-const PRODUCT: Variants = {
-  enter: (d: number) => ({ x: `${d * 60}%`, rotate: d * 9, opacity: 0, scale: 0.9 }),
+const GROUP: Variants = {
+  enter: (d: number) => ({ x: `${d * 50}%`, rotate: d * 4, opacity: 0, scale: 0.92 }),
   center: { x: "0%", rotate: 0, opacity: 1, scale: 1 },
-  exit: (d: number) => ({ x: `${d * -60}%`, rotate: d * -9, opacity: 0, scale: 0.9 }),
+  exit: (d: number) => ({ x: `${d * -50}%`, rotate: d * -4, opacity: 0, scale: 0.92 }),
 };
 
 /** Text that rolls through a mask when its key changes; direction follows the switcher.
@@ -115,16 +80,18 @@ function Swap({
   dir,
   delay = 0,
   className,
+  style,
   children,
 }: {
   k: string;
   dir: number;
   delay?: number;
   className?: string;
+  style?: React.CSSProperties;
   children: React.ReactNode;
 }) {
   return (
-    <span className={cn("relative block [clip-path:inset(0_-100vw_-0.2em)]", className)}>
+    <span className={cn("relative block [clip-path:inset(0_-100vw_-0.2em)]", className)} style={style}>
       <AnimatePresence initial={false} custom={dir} mode="popLayout">
         <motion.span
           key={k}
@@ -146,9 +113,7 @@ function Swap({
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
-  const { add, isOpen } = useCart();
-  const { setFilter } = useShopFilter();
-  const [added, flagAdded] = useAddFeedback();
+  const { isOpen } = useCart();
 
   const [{ index, dir }, setSlide] = useState({ index: 0, dir: 1 });
   const [paused, setPaused] = useState(false);
@@ -159,6 +124,8 @@ export function Hero() {
   // `reduce` is null on the server, so it only gates behaviour here, never markup.
   const playing = !reduce && !paused && !hover && !keyboardFocus && !dragging && inView && !isOpen;
   const s = SLIDES[index];
+  const c = s.collection;
+  const size = typeSizes(s);
 
   // Autoplay progress (0..1) drives the active dot and pauses mid-way instead of restarting.
   const progress = useMotionValue(0);
@@ -179,15 +146,15 @@ export function Hero() {
   const py = useMotionValue(0);
   const sx = useSpring(px, { stiffness: 70, damping: 18, mass: 0.7 });
   const sy = useSpring(py, { stiffness: 70, damping: 18, mass: 0.7 });
-  const rotateY = useTransform(sx, [-0.5, 0.5], [-14, 14]);
-  const rotateX = useTransform(sy, [-0.5, 0.5], [9, -9]);
+  const rotateY = useTransform(sx, [-0.5, 0.5], [-10, 10]);
+  const rotateX = useTransform(sy, [-0.5, 0.5], [7, -7]);
   const wordsX = useTransform(sx, (v) => v * -22);
   const markX = useTransform(sx, (v) => v * 48);
   const markY = useTransform(sy, (v) => v * 20);
 
-  // Drag the product sideways to switch; it leans into the drag.
+  // Drag the group sideways to switch; it leans into the drag.
   const dragX = useMotionValue(0);
-  const lean = useTransform(dragX, [-240, 240], [-10, 10]);
+  const lean = useTransform(dragX, [-240, 240], [-6, 6]);
 
   const onPointerMove = (e: React.PointerEvent) => {
     if (reduce || e.pointerType !== "mouse") return;
@@ -201,24 +168,21 @@ export function Hero() {
   };
   const holdOnMouse = (on: boolean) => (e: React.PointerEvent) => e.pointerType === "mouse" && setHover(on);
 
-  const addToCart = () => {
-    add(s.product.id);
-    flagAdded();
-  };
-
   return (
     <section
       id="top"
       ref={ref}
       aria-roledescription="carousel"
-      aria-label="Featured products"
+      aria-label="Collections"
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}
       onFocus={(e) => e.target.matches(":focus-visible") && setKeyboardFocus(true)}
       onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setKeyboardFocus(false)}
       className="relative isolate overflow-hidden bg-brand text-white [&_:focus-visible]:outline-white"
     >
-      <h1 className="sr-only">KROMA: insulated steel flasks and glass tableware, delivered across Pakistan</h1>
+      <h1 className="sr-only">
+        KROMA: glass tea, drink and dinner wares, kettles, flasks and bottles, delivered across Pakistan
+      </h1>
 
       {/* Brand watermark: the one decorative layer, drifting against the pointer. */}
       <motion.p
@@ -229,44 +193,29 @@ export function Hero() {
         KROMA
       </motion.p>
 
-      <div className="shell flex min-h-[calc(100svh-4rem)] flex-col pt-4 pb-6 lg:min-h-[max(40rem,calc(100svh-4rem))] lg:pt-6 lg:pb-7">
-        <div className="flex items-start justify-between gap-4">
-          <p className="hidden font-mono text-[11px] leading-4 tracking-[0.06em] text-white/85 uppercase sm:block">
-            <span className="tabular-nums">
-              {String(index + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
-            </span>
-            <span className="mx-2">—</span>
-            {CATEGORIES.find((c) => c.id === s.product.category)?.label}
-          </p>
-          <p className="ml-auto rounded-full border border-white/40 px-3 py-1.5 font-mono text-[10.5px] leading-none font-medium tracking-[0.06em] uppercase">
-            Free delivery from {formatPrice(FREE_SHIPPING_FROM)} · Cash on delivery
-          </p>
-        </div>
-
+      <div className="shell flex min-h-[calc(100svh-4rem)] flex-col pt-6 pb-6 lg:min-h-[max(38rem,calc(100svh-4rem))] lg:pb-7">
         <div
           aria-live={playing ? "off" : "polite"}
           className="grid flex-1 grid-cols-1 content-center items-center [grid-template-areas:'left'_'stage'_'right'_'ctrl'] lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-x-6 lg:[grid-template-areas:'left_stage_right'_'._ctrl_.']"
         >
-          <motion.div style={{ x: wordsX }} className="relative [grid-area:left] lg:pb-10">
-            <Swap k={`${s.product.id}-l`} dir={dir} className="display text-[clamp(5rem,8.6vw,9.5rem)]">
+          <motion.div style={{ x: wordsX }} className="relative [container-type:inline-size] [grid-area:left] lg:pb-10">
+            <Swap k={`${c.id}-l`} dir={dir} className="display" style={size.word}>
               {s.left[0]}
             </Swap>
             <Swap
-              k={`${s.product.id}-li`}
+              k={`${c.id}-li`}
               dir={dir}
               delay={0.08}
-              className="mt-1 pr-[0.15em] font-serif text-[clamp(1.5rem,2.6vw,2.5rem)] leading-[1.2] tracking-[-0.01em] italic"
+              className="mt-1 pr-[0.15em] font-serif leading-[1.2] tracking-[-0.01em] whitespace-nowrap italic"
+              style={size.line}
             >
               {s.left[1]}
-            </Swap>
-            <Swap k={`${s.product.id}-n`} dir={dir} delay={0.14} className="mt-5 hidden max-w-[36ch] lg:block">
-              <span className="block font-mono text-[12px] leading-[1.65] text-white/85">{s.note}</span>
             </Swap>
           </motion.div>
 
           {/* Stage: drag or swipe to switch, tilts toward the cursor. */}
           <div
-            className="relative z-10 -my-8 justify-self-center [grid-area:stage] [perspective:1200px] lg:my-0"
+            className="relative z-10 -my-4 justify-self-center [grid-area:stage] [perspective:1400px] lg:my-0"
             onPointerEnter={holdOnMouse(true)}
             onPointerLeave={holdOnMouse(false)}
           >
@@ -282,13 +231,13 @@ export function Hero() {
                 else if (swipe > 70) go(-1);
               }}
               style={{ x: dragX, rotate: lean, rotateX, rotateY }}
-              className="relative aspect-[4/5] w-[min(66vw,calc((100svh-29rem)*0.8),21rem)] cursor-grab active:cursor-grabbing lg:w-[min(31vw,calc((100svh-19rem)*0.8),30rem)]"
+              className="relative aspect-[13/10] w-[min(92vw,calc((100svh-25rem)*1.3),30rem)] cursor-grab active:cursor-grabbing lg:w-[min(40vw,calc((100svh-15rem)*1.3),46rem)]"
             >
               <AnimatePresence initial={false} custom={dir}>
                 <motion.div
-                  key={s.product.id}
+                  key={c.id}
                   custom={dir}
-                  variants={PRODUCT}
+                  variants={GROUP}
                   initial="enter"
                   animate="center"
                   exit="exit"
@@ -296,56 +245,40 @@ export function Hero() {
                   className="absolute inset-0"
                   role="group"
                   aria-roledescription="slide"
-                  aria-label={`${index + 1} of ${SLIDES.length}: ${s.product.name}`}
+                  aria-label={`${index + 1} of ${SLIDES.length}: ${c.label}`}
                 >
-                  <div className="size-full origin-[50%_84%]" style={{ transform: `scale(${s.scale ?? 1})` }}>
-                    <ProductArt
-                      kind={s.product.kind}
-                      tone={s.product.tone}
-                      view={s.view}
-                      fit
-                      title={`${s.product.name}, ${s.product.subtitle}`}
-                      className="pointer-events-none"
-                    />
-                  </div>
+                  <GroupArt collection={c.id} title={`${c.label}: ${c.tagline}`} className="pointer-events-none" />
                 </motion.div>
               </AnimatePresence>
             </motion.div>
           </div>
 
-          <motion.div style={{ x: wordsX }} className="relative text-right [grid-area:right] lg:pb-10">
-            <Swap k={`${s.product.id}-r`} dir={dir} delay={0.05} className="display text-[clamp(5rem,8.6vw,9.5rem)]">
+          <motion.div
+            style={{ x: wordsX }}
+            className="relative text-right [container-type:inline-size] [grid-area:right] lg:pb-10"
+          >
+            <Swap k={`${c.id}-r`} dir={dir} delay={0.05} className="display" style={size.word}>
               {s.right[0]}
             </Swap>
             <Swap
-              k={`${s.product.id}-ri`}
+              k={`${c.id}-ri`}
               dir={dir}
               delay={0.12}
-              className="mt-1 pr-[0.15em] font-serif text-[clamp(1.5rem,2.6vw,2.5rem)] leading-[1.2] tracking-[-0.01em] italic"
+              className="mt-1 pr-[0.15em] font-serif leading-[1.2] tracking-[-0.01em] whitespace-nowrap italic"
+              style={size.line}
             >
               {s.right[1]}
             </Swap>
-            <div className="mt-5 flex items-center justify-between gap-4 text-left lg:justify-end lg:text-right">
-              <Swap k={`${s.product.id}-p`} dir={dir} delay={0.16} className="min-w-0">
-                <span className="block truncate font-mono text-[11px] leading-4 tracking-[0.04em] text-white/85 uppercase">
-                  {s.product.name}
-                </span>
-                <span className="mt-1 block font-display text-[24px] leading-7 font-bold tabular-nums">
-                  {formatPrice(s.product.price)}
-                </span>
-              </Swap>
-              <button
-                type="button"
-                onClick={addToCart}
-                aria-label={`Add ${s.product.name} to cart`}
-                className={buttonClass("inverse", "h-11 shrink-0 px-5")}
-              >
-                {added ? <Check aria-hidden className="size-4" strokeWidth={2.25} /> : null}
-                {added ? "Added" : "Add to cart"}
-              </button>
-              <span className="sr-only" aria-live="polite">
-                {added ? `${s.product.name} added to cart` : ""}
-              </span>
+            {/* On desktop the button hangs below the line, so both poster words sit on the same baseline. */}
+            <div className="mt-6 flex justify-end lg:absolute lg:top-[calc(100%-2.5rem)] lg:right-0">
+              <Link href={collectionHref(c.id)} className={buttonClass("inverse", "group h-11 shrink-0 px-5")}>
+                Shop {c.label}
+                <ArrowRight
+                  aria-hidden
+                  className="size-4 transition-transform duration-300 group-hover:translate-x-0.5"
+                  strokeWidth={2}
+                />
+              </Link>
             </div>
           </motion.div>
 
@@ -359,22 +292,22 @@ export function Hero() {
               if (e.key === "ArrowLeft") go(-1);
             }}
           >
-            <CtrlButton label="Previous product" onClick={() => go(-1)}>
+            <CtrlButton label="Previous collection" onClick={() => go(-1)}>
               <ArrowLeft aria-hidden className="size-4" strokeWidth={2} />
             </CtrlButton>
-            <div role="group" aria-label="Choose a product" className="flex items-center">
+            <div role="group" aria-label="Choose a collection" className="flex items-center">
               {SLIDES.map((sl, i) => (
                 <Dot
-                  key={sl.product.id}
+                  key={sl.collection.id}
                   active={i === index}
-                  label={`Show ${sl.product.name}`}
+                  label={`Show ${sl.collection.label}`}
                   onClick={() => goTo(i, i > index ? 1 : -1)}
                   progress={progress}
                   full={paused}
                 />
               ))}
             </div>
-            <CtrlButton label="Next product" onClick={() => go(1)}>
+            <CtrlButton label="Next collection" onClick={() => go(1)}>
               <ArrowRight aria-hidden className="size-4" strokeWidth={2} />
             </CtrlButton>
             <CtrlButton
@@ -392,32 +325,9 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="mt-6 grid items-end gap-5 lg:mt-2 lg:grid-cols-[1fr_auto_1fr]">
-          <dl className="hidden font-mono text-[11px] leading-[1.7] tracking-[0.04em] text-white/85 uppercase xl:block">
-            {SHOP_BY.map((c) => (
-              <div key={c.id} className="flex gap-2 whitespace-nowrap">
-                <dt>{c.label}</dt>
-                <dd className="tabular-nums">from {formatPrice(c.from)}</dd>
-              </div>
-            ))}
-          </dl>
-          <nav
-            aria-label="Shop by category"
-            className="-mx-5 flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] sm:mx-0 sm:justify-center sm:px-0 lg:col-start-2 [&::-webkit-scrollbar]:hidden"
-          >
-            {SHOP_BY.map((c) => (
-              <a
-                key={c.id}
-                href="#shop-filters"
-                onClick={() => setFilter(c.id)}
-                className={buttonClass("outline-inverse", "h-11 shrink-0 px-5")}
-              >
-                Shop {c.label}
-                <span className="font-mono font-medium text-white/80 tabular-nums">({c.count})</span>
-              </a>
-            ))}
-          </nav>
-          <ChatBadge className="hidden justify-self-end lg:col-start-3 lg:grid" />
+        {/* Floats over the bottom-right corner so it doesn't push the stage up. */}
+        <div className="pointer-events-none relative hidden h-0 lg:block">
+          <ChatBadge className="pointer-events-auto absolute right-0 bottom-0 grid" />
         </div>
       </div>
     </section>
