@@ -1,24 +1,26 @@
-import { CartDrawer } from "@/components/cart/CartDrawer";
 import { Navbar } from "@/components/layout/Navbar";
-import { Catalog } from "@/components/sections/Catalog";
+import { Collections } from "@/components/sections/Collections";
 import { Craft } from "@/components/sections/Craft";
-import { About, Footer } from "@/components/sections/Footer";
+import { About, Footer, OrderCta } from "@/components/sections/Footer";
 import { Hero } from "@/components/sections/Hero";
-import { Lookbook } from "@/components/sections/Lookbook";
+import { TopSelling } from "@/components/sections/TopSelling";
+import { WhyUs } from "@/components/sections/WhyUs";
 
+/** Brand page: the collections and the reasons to buy. Ordering happens on /shop. */
 export default function Home() {
   return (
     <>
       <Navbar />
       <main>
         <Hero />
-        <Catalog />
+        <WhyUs />
+        <TopSelling />
+        <Collections />
         <Craft />
-        <Lookbook />
         <About />
+        <OrderCta />
       </main>
-      <Footer />
-      <CartDrawer />
+      <Footer className="border-t-0" />
     </>
   );
 }
