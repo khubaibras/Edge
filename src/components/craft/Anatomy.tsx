@@ -1,14 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { useId, useState } from "react";
-import { useCart } from "@/components/cart/CartProvider";
-import { useAddFeedback } from "@/components/shop/ProductCard";
 import { buttonClass } from "@/components/ui/primitives";
 import { formatPrice } from "@/lib/cart";
 import { EASE } from "@/lib/motion";
-import { PRODUCT_BY_ID } from "@/lib/products";
+import { PRODUCT_BY_ID, productHref } from "@/lib/products";
 import { cn } from "@/lib/utils";
 import { STUDIES } from "./data";
 import { FlaskSection, GlassSection, VIEW_H, VIEW_W } from "./drawings";
@@ -22,8 +21,6 @@ const STUDY_PRODUCTS = STUDIES.map((s) => {
 /** Tabbed cutaway drawings with numbered hotspots that isolate each part. */
 export function Anatomy({ className }: { className?: string }) {
   const uid = "c" + useId().replace(/[^a-zA-Z0-9]/g, "");
-  const { add } = useCart();
-  const [added, flagAdded] = useAddFeedback();
   const [studyIndex, setStudyIndex] = useState(0);
   const [activeId, setActiveId] = useState(STUDIES[0].features[0].id);
   const study = STUDIES[studyIndex];
@@ -222,20 +219,15 @@ export function Anatomy({ className }: { className?: string }) {
                   </div>
                 ))}
               </dl>
-              <button
-                type="button"
-                onClick={() => {
-                  add(product.id);
-                  flagAdded();
-                }}
-                className={buttonClass("primary", "mt-5 w-full")}
-              >
-                {added ? <Check aria-hidden className="size-4" strokeWidth={2.25} /> : null}
-                {added ? "Added to cart" : `Add to cart · ${formatPrice(product.price)}`}
-              </button>
-              <span className="sr-only" aria-live="polite">
-                {added ? `${product.name} added to cart` : ""}
-              </span>
+              {/* Ordering happens in the shop; this opens the product there. */}
+              <Link href={productHref(product)} className={buttonClass("primary", "group mt-5 w-full")}>
+                View in shop
+                <ArrowRight
+                  aria-hidden
+                  className="size-4 transition-transform duration-300 group-hover:translate-x-0.5"
+                  strokeWidth={2}
+                />
+              </Link>
             </div>
           </div>
         </motion.div>
