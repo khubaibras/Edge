@@ -1,4 +1,5 @@
 import type { Tone } from "@/lib/types";
+import { brushed, frontArc, Grad, side } from "./metal";
 import { ContactShadow, GROUND_Y, TONES, type ArtMap, type ArtRenderer } from "./shared";
 
 const INK = "#151413";
@@ -668,13 +669,136 @@ const Mug: ArtRenderer = ({ tone, view, uid }) => {
   );
 };
 
+/* ---------------------------------------------------------------- More crockery: quarter plates, a standing plate */
+
+const SidePlate: ArtRenderer = ({ tone, view, uid }) => {
+  const g = glassOf(tone);
+  // Front: a stack of four, as they come in the box. Alt: one plate on its own.
+  const n = view === "alt" ? 1 : 4;
+  return (
+    <>
+      <GlassDefs id={uid} g={g} />
+      <Ground id={uid} rx={92} />
+      {Array.from({ length: n }, (_, i) => (
+        <Dish key={i} id={uid} g={g} cy={432 - i * 9} rx={118} ry={30} lip={4} />
+      ))}
+    </>
+  );
+};
+
+/** A plate standing on its edge, face to the camera: the shape that says "dinner set" at a glance. */
+const PlateStand: ArtRenderer = ({ tone, uid }) => {
+  const g = glassOf(tone);
+  const cy = 308;
+  const r = 150;
+  const w = r3(r * 0.66);
+  return (
+    <>
+      <defs>
+        <radialGradient id={`${uid}-pe`}>
+          <stop offset="0.6" stopColor={INK} stopOpacity={0} />
+          <stop offset="0.66" stopColor={INK} stopOpacity={g.edge * 0.16} />
+          <stop offset="0.72" stopColor="#fff" stopOpacity={0.14} />
+          <stop offset="0.88" stopColor={INK} stopOpacity={g.edge * 0.05} />
+          <stop offset="0.96" stopColor={INK} stopOpacity={g.edge * 0.36} />
+          <stop offset="1" stopColor={INK} stopOpacity={g.edge * 0.7} />
+        </radialGradient>
+        <radialGradient id={`${uid}-pg`} cx="0.32" cy="0.28" r="0.5">
+          <stop offset="0" stopColor="#fff" stopOpacity={0.4} />
+          <stop offset="1" stopColor="#fff" stopOpacity={0} />
+        </radialGradient>
+      </defs>
+      <ContactShadow id={`${uid}-s`} cx={CX + 8} rx={104} ry={6} opacity={0.22} />
+      <circle cx={CX} cy={cy} r={r} fill={g.tint} fillOpacity={g.tintOp} />
+      <circle cx={CX} cy={cy} r={r} fill={`url(#${uid}-pe)`} />
+      <circle cx={CX} cy={cy} r={r} fill={`url(#${uid}-pg)`} />
+      {/* well, foot ring and their catch-lights */}
+      <circle cx={CX} cy={cy} r={w} fill="#fff" fillOpacity={0.05} stroke={INK} strokeOpacity={g.edge * 0.38} strokeWidth={0.9} />
+      <circle cx={CX} cy={cy} r={r3(r * 0.57)} fill="none" stroke={INK} strokeOpacity={g.edge * 0.16} strokeWidth={0.8} />
+      <g fill="none" strokeLinecap="round" stroke="#fff">
+        <path d={arc(CX, cy, w - 1.5, w - 1.5, 20, 115)} strokeOpacity={0.8} strokeWidth={1.4} />
+        <path d={arc(CX, cy, r - 4, r - 4, 192, 252)} strokeOpacity={0.95} strokeWidth={2.2} />
+        <path d={arc(CX, cy, r - 4, r - 4, 272, 298)} strokeOpacity={0.6} strokeWidth={1.4} />
+        <path d={arc(CX, cy, r - 3, r - 3, 28, 72)} strokeOpacity={0.45} strokeWidth={1.4} />
+      </g>
+      <circle cx={CX} cy={cy} r={r - 6} fill="none" stroke={INK} strokeOpacity={g.edge * 0.24} strokeWidth={0.8} />
+      <circle cx={CX} cy={cy} r={r} fill="none" stroke={INK} strokeOpacity={g.edge * 0.85} strokeWidth={1} />
+    </>
+  );
+};
+
+/* ---------------------------------------------------------------- Teapot */
+
+const POT = `M${CX - 46} 282C${CX - 92} 290 ${CX - 106} 326 ${CX - 106} 366C${CX - 106} 410 ${CX - 80} 438 ${CX - 54} 446A54 10 0 0 0 ${CX + 54} 446C${CX + 80} 438 ${CX + 106} 410 ${CX + 106} 366C${CX + 106} 326 ${CX + 92} 290 ${CX + 46} 282A46 9 0 0 0 ${CX - 46} 282Z`;
+const POT_SPOUT = `M${CX + 98} 384C${CX + 124} 376 ${CX + 138} 344 ${CX + 144} 306L${CX + 162} 310C${CX + 158} 352 ${CX + 138} 406 ${CX + 82} 430Z`;
+const POT_HANDLE = `M${CX - 96} 320C${CX - 140} 314 ${CX - 154} 350 ${CX - 150} 376C${CX - 146} 404 ${CX - 126} 420 ${CX - 92} 418`;
+const LID = 272;
+const POT_LID = `M${CX - 50},${LID} C${CX - 48},${LID - 10} ${CX - 26},${LID - 14} ${CX},${LID - 14} C${CX + 26},${LID - 14} ${CX + 48},${LID - 10} ${CX + 50},${LID} A50,9.5 0 0 1 ${CX - 50},${LID} Z`;
+
+const Teapot: ArtRenderer = ({ tone, view, uid }) => {
+  const g = glassOf(tone);
+  const tea = view === "alt";
+  return (
+    <>
+      <GlassDefs id={uid} g={g} />
+      <defs>
+        <clipPath id={`${uid}-pot`}>
+          <path d={POT} />
+        </clipPath>
+        <Grad id={`${uid}-st`} stops={brushed(TONES.steel)} />
+        <Grad id={`${uid}-sv`} x2={0} y2={1} stops={[[0, "#fff", 0.6], [1, "#fff", 0]]} />
+        <pattern id={`${uid}-mesh`} width="3.2" height="3.2" patternUnits="userSpaceOnUse">
+          <circle cx="1.6" cy="1.6" r="0.8" fill={INK} fillOpacity="0.4" />
+        </pattern>
+      </defs>
+      <Ground id={uid} rx={86} />
+      <Handle id={uid} g={g} d={POT_HANDLE} w={13} />
+      <Body d={POT} id={uid} g={g} />
+      <g clipPath={`url(#${uid}-pot)`}>
+        {tea && <Liquid id={uid} yW={336} rW={101} ryW={17} floor={442} top="#dba566" body="#a9682c" surface="#e6ba82" />}
+        {/* steel mesh infuser, seen through the glass (and the tea) */}
+        <g opacity={tea ? 0.45 : 0.85}>
+          <path d={side(CX, 30, 286, 400)} fill={`url(#${uid}-st)`} opacity={0.5} />
+          <path d={side(CX, 30, 286, 400)} fill={`url(#${uid}-mesh)`} />
+          <path d={frontArc(CX, 30, 400)} fill="none" stroke={INK} strokeOpacity={0.35} />
+          <path d={`M${CX - 30} 286V400M${CX + 30} 286V400`} stroke={INK} strokeOpacity={0.3} strokeWidth={0.8} />
+        </g>
+        <Base id={uid} g={g} yF={436} rF={50} ryF={9} yB={446} rB={54} ryB={10} />
+        <g opacity={0.85} fill="none" strokeLinecap="round">
+          <path d={`M${CX - 82} 314C${CX - 96} 338 ${CX - 98} 380 ${CX - 82} 410`} stroke={`url(#${uid}-y)`} strokeWidth={9} opacity={0.5} />
+          <path d={`M${CX - 92} 306C${CX - 104} 334 ${CX - 106} 384 ${CX - 90} 418`} stroke={`url(#${uid}-y)`} strokeWidth={1.6} />
+          <path d={`M${CX + 88} 318C${CX + 98} 344 ${CX + 98} 384 ${CX + 86} 408`} stroke={`url(#${uid}-y)`} strokeWidth={2.2} opacity={0.6} />
+        </g>
+      </g>
+      <Outline d={POT} id={`${uid}-o`} g={g} />
+
+      <Body d={POT_SPOUT} id={uid} g={g} />
+      <path d={`M${CX + 100} 386C${CX + 124} 378 ${CX + 137} 348 ${CX + 143} 312`} fill="none" stroke="#fff" strokeOpacity={0.85} strokeWidth={1.4} strokeLinecap="round" />
+      <Outline d={POT_SPOUT} id={`${uid}-os`} g={g} w={0.9} />
+      <ellipse cx={CX + 153} cy={308} rx={9} ry={2.6} transform={`rotate(13 ${CX + 153} 308)`} fill="#fff" fillOpacity={0.3} stroke={INK} strokeOpacity={g.edge * 0.7} strokeWidth={0.8} />
+
+      {/* steel lid with a ball knob */}
+      <path d={side(CX, 50, LID, LID + 9)} fill={`url(#${uid}-st)`} />
+      <path d={frontArc(CX, 50, LID + 9)} fill="none" stroke={INK} strokeOpacity={0.35} />
+      <path d={POT_LID} fill={`url(#${uid}-st)`} />
+      <path d={POT_LID} fill={`url(#${uid}-sv)`} />
+      <path d={side(CX, 5, LID - 26, LID - 13)} fill={`url(#${uid}-st)`} />
+      <circle cx={CX} cy={LID - 30} r={9} fill={`url(#${uid}-st)`} />
+      <circle cx={CX - 3} cy={LID - 33} r={2.6} fill="#fff" fillOpacity={0.85} />
+    </>
+  );
+};
+
 export const GLASS_ART: ArtMap = {
   tumbler: Tumbler,
   doublewall: DoubleWall,
   carafe: Carafe,
   coupe: Coupe,
   plate: Plate,
+  sideplate: SidePlate,
+  platestand: PlateStand,
   bowl: Bowl,
   teacup: TeaCup,
+  teapot: Teapot,
   mug: Mug,
 };

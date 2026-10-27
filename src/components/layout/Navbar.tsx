@@ -1,25 +1,36 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, MessageCircle, X } from "lucide-react";
+import { ArrowRight, Menu, MessageCircle, X } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCart } from "@/components/cart/CartProvider";
-import { useShopFilter, type Filter } from "@/components/shop/ShopFilter";
+import { useActiveCollection } from "@/components/shop/useActiveSection";
 import { buttonClass } from "@/components/ui/primitives";
 import { CHAT_LINK } from "@/lib/contact";
 import { EASE, SPRING, SPRING_SOFT } from "@/lib/motion";
-import { CATEGORIES, PRODUCTS } from "@/lib/products";
+import { COLLECTIONS, familiesIn } from "@/lib/products";
+import type { Category } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-const SECTIONS = [
-  { href: "#craft", label: "Inside the flask" },
-  { href: "#lookbook", label: "Ideas" },
-  { href: "#about", label: "About & ordering" },
-];
+/** "home" is the brand page; "shop" is the order page, where the cart lives. */
+export type NavVariant = "home" | "shop";
+
+const PAGE_LINKS: Record<NavVariant, { href: string; label: string }[]> = {
+  home: [
+    { href: "#why", label: "Why us" },
+    { href: "#top-selling", label: "Top selling" },
+    { href: "#collections", label: "Our collections" },
+    { href: "#about", label: "Questions" },
+  ],
+  shop: [
+    { href: "/", label: "Home" },
+    { href: "#how-to-order", label: "How ordering works" },
+    { href: "/#about", label: "Questions" },
+  ],
+};
 
 const LINK = "font-display text-[12px] font-semibold uppercase tracking-[0.07em]";
-
-const countFor = (id: Filter) => (id === "all" ? PRODUCTS.length : PRODUCTS.filter((p) => p.category === id).length);
 
 /** True while the cobalt hero is behind the bar, so the bar can wear the same colour. */
 function useOverHero() {
@@ -39,12 +50,42 @@ function useOverHero() {
   return over;
 }
 
-export function Navbar() {
+/** Collection link: a same-page jump on the shop, a page change from home. */
+function CollectionLink({
+  variant,
+  slug,
+  className,
+  onClick,
+  current,
+  children,
+}: {
+  variant: NavVariant;
+  slug: string;
+  className?: string;
+  onClick?: () => void;
+  current?: boolean;
+  children: React.ReactNode;
+}) {
+  const props = { className, onClick, "aria-current": current ? ("true" as const) : undefined };
+  return variant === "shop" ? (
+    <a href={`#${slug}`} {...props}>
+      {children}
+    </a>
+  ) : (
+    <Link href={`/shop#${slug}`} {...props}>
+      {children}
+    </Link>
+  );
+}
+
+export function Navbar({ variant = "home" }: { variant?: NavVariant }) {
   const { count, openCart } = useCart();
-  const { filter, setFilter } = useShopFilter();
   const overHero = useOverHero();
+  const active = useActiveCollection();
   const [menuOpen, setMenuOpen] = useState(false);
   const onBrand = overHero && !menuOpen;
+  // Home is a brand page: it offers the shop, and only shows the cart once something is in it.
+  const showCart = variant === "shop" || count > 0;
 
   // Open menu: Escape closes it and the page underneath can't scroll.
   useEffect(() => {
@@ -59,10 +100,8 @@ export function Navbar() {
     };
   }, [menuOpen]);
 
-  const pick = (id: Filter) => {
-    setFilter(id);
-    setMenuOpen(false);
-  };
+  const close = () => setMenuOpen(false);
+  const isActive = (id: Category) => variant === "shop" && active === id;
 
   return (
     <header
@@ -72,43 +111,43 @@ export function Navbar() {
       )}
     >
       <div className="shell grid h-full grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
-        <a
-          href="#top"
-          onClick={() => setMenuOpen(false)}
+        <Link
+          href={variant === "home" ? "#top" : "/"}
+          onClick={close}
           className="justify-self-start leading-none"
-          aria-label="KROMA, back to top"
+          aria-label={variant === "home" ? "KROMA, back to top" : "KROMA home"}
         >
           <span className="display block text-[23px] tracking-[-0.01em]">KROMA</span>
           <span className="mt-1 block font-mono text-[9.5px] tracking-[0.06em] whitespace-nowrap uppercase opacity-80">
-            Flasks &amp; glass tableware
+            Tableware · Kettles · Flasks
           </span>
-        </a>
+        </Link>
 
-        <nav aria-label="Shop categories" className="hidden lg:block">
-          <ul className="flex items-center gap-1">
-            {CATEGORIES.map((c) => {
-              const active = filter === c.id;
+        <nav aria-label="Collections" className="hidden lg:block">
+          <ul className="flex items-center">
+            {COLLECTIONS.map((c) => {
+              const on = isActive(c.id);
               return (
                 <li key={c.id}>
-                  <a
-                    href="#shop-filters"
-                    onClick={() => pick(c.id)}
-                    aria-current={active ? "true" : undefined}
+                  <CollectionLink
+                    variant={variant}
+                    slug={c.slug}
+                    current={on}
                     className={cn(
                       LINK,
-                      "relative block px-3.5 py-2 transition-opacity duration-300",
-                      active ? "opacity-100" : "opacity-75 hover:opacity-100",
+                      "relative block px-2.5 py-2 whitespace-nowrap transition-opacity duration-300 xl:px-3.5",
+                      on ? "opacity-100" : "opacity-75 hover:opacity-100",
                     )}
                   >
                     {c.label}
-                    {active && (
+                    {on && (
                       <motion.span
-                        layoutId="nav-filter"
-                        className="absolute inset-x-3.5 bottom-0.5 h-[2px] bg-current"
+                        layoutId="nav-collection"
+                        className="absolute inset-x-2.5 bottom-0.5 h-[2px] bg-current xl:inset-x-3.5"
                         transition={SPRING}
                       />
                     )}
-                  </a>
+                  </CollectionLink>
                 </li>
               );
             })}
@@ -116,39 +155,48 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2 justify-self-end">
-          <a
-            href="#how-to-order"
-            className={cn(LINK, "hidden px-3 py-2 opacity-75 transition-opacity hover:opacity-100 xl:block")}
-          >
-            How to order
-          </a>
-          <button
-            type="button"
-            onClick={() => {
-              setMenuOpen(false);
-              openCart();
-            }}
-            aria-label={`Open cart, ${count} ${count === 1 ? "item" : "items"}`}
-            className={cn(
-              LINK,
-              "flex h-10 items-center gap-2.5 rounded-full pr-1.5 pl-4 transition-[background-color,color] duration-500 ease-quint active:scale-[0.97]",
-              onBrand ? "bg-white text-brand focus-visible:outline-white" : "bg-ink text-paper",
-            )}
-          >
-            Cart
-            <motion.span
-              key={count}
-              initial={count ? { scale: 1.4 } : false}
-              animate={{ scale: 1 }}
-              transition={SPRING_SOFT}
+          {showCart ? (
+            <button
+              type="button"
+              onClick={() => {
+                close();
+                openCart();
+              }}
+              aria-label={`Open cart, ${count} ${count === 1 ? "item" : "items"}`}
               className={cn(
-                "grid h-7 min-w-7 place-items-center rounded-full px-1.5 font-mono text-[11px] tabular-nums transition-colors duration-500",
-                onBrand ? "bg-brand text-white" : "bg-paper text-ink",
+                LINK,
+                "flex h-10 items-center gap-2.5 rounded-full pr-1.5 pl-4 transition-[background-color,color] duration-500 ease-quint active:scale-[0.97]",
+                onBrand ? "bg-white text-brand focus-visible:outline-white" : "bg-ink text-paper",
               )}
             >
-              {count}
-            </motion.span>
-          </button>
+              Cart
+              <motion.span
+                key={count}
+                initial={count ? { scale: 1.4 } : false}
+                animate={{ scale: 1 }}
+                transition={SPRING_SOFT}
+                className={cn(
+                  "grid h-7 min-w-7 place-items-center rounded-full px-1.5 font-mono text-[11px] tabular-nums transition-colors duration-500",
+                  onBrand ? "bg-brand text-white" : "bg-paper text-ink",
+                )}
+              >
+                {count}
+              </motion.span>
+            </button>
+          ) : (
+            <Link
+              href="/shop"
+              onClick={close}
+              className={cn(
+                LINK,
+                "group hidden h-10 items-center gap-2 rounded-full px-4 transition-[background-color,color] duration-500 ease-quint active:scale-[0.97] sm:flex",
+                onBrand ? "bg-white text-brand focus-visible:outline-white" : "bg-ink text-paper",
+              )}
+            >
+              Shop now
+              <ArrowRight aria-hidden className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2.25} />
+            </Link>
+          )}
 
           <button
             type="button"
@@ -171,7 +219,7 @@ export function Navbar() {
           <motion.div
             key="scrim"
             aria-hidden
-            onClick={() => setMenuOpen(false)}
+            onClick={close}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -191,35 +239,44 @@ export function Navbar() {
             className="absolute inset-x-0 top-full max-h-[calc(100svh-4rem)] overflow-y-auto border-b border-line bg-paper text-ink shadow-soft lg:hidden"
           >
             <div className="shell pt-5 pb-8">
-              <p className="eyebrow">Shop</p>
+              <p className="eyebrow">Collections</p>
               <ul className="mt-1">
-                {CATEGORIES.map((c) => (
+                {COLLECTIONS.map((c) => (
                   <li key={c.id} className="border-b border-line">
-                    <a
-                      href="#shop-filters"
-                      onClick={() => pick(c.id)}
-                      aria-current={filter === c.id ? "true" : undefined}
+                    <CollectionLink
+                      variant={variant}
+                      slug={c.slug}
+                      onClick={close}
+                      current={isActive(c.id)}
                       className="flex items-baseline justify-between gap-4 py-3.5"
                     >
                       <span className="display text-[clamp(1.75rem,8.6vw,2.5rem)]">{c.label}</span>
-                      <span className="eyebrow tabular-nums">{countFor(c.id)}</span>
-                    </a>
+                      <span className="eyebrow tabular-nums">{familiesIn(c.id).length}</span>
+                    </CollectionLink>
                   </li>
                 ))}
               </ul>
               <ul className="mt-5 grid gap-0.5">
-                {SECTIONS.map((s) => (
+                {PAGE_LINKS[variant].map((s) => (
                   <li key={s.href}>
-                    <a href={s.href} onClick={() => setMenuOpen(false)} className="block py-2 text-[16px] text-ink-2">
+                    <Link href={s.href} onClick={close} className="block py-2 text-[16px] text-ink-2">
                       {s.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
-              <a href={CHAT_LINK} target="_blank" rel="noopener noreferrer" className={buttonClass("brand", "mt-6 w-full")}>
-                <MessageCircle aria-hidden className="size-4" strokeWidth={2} />
-                Chat on WhatsApp
-              </a>
+              <div className="mt-6 grid gap-2">
+                {variant === "home" && (
+                  <Link href="/shop" onClick={close} className={buttonClass("primary", "w-full")}>
+                    Shop now
+                    <ArrowRight aria-hidden className="size-4" strokeWidth={2} />
+                  </Link>
+                )}
+                <a href={CHAT_LINK} target="_blank" rel="noopener noreferrer" className={buttonClass("brand", "w-full")}>
+                  <MessageCircle aria-hidden className="size-4" strokeWidth={2} />
+                  Chat on WhatsApp
+                </a>
+              </div>
             </div>
           </motion.nav>
         )}

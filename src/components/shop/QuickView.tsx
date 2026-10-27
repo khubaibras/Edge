@@ -5,10 +5,11 @@ import { Check, Minus, Plus, X } from "lucide-react";
 import { useState } from "react";
 import { ProductArt } from "@/components/art/ProductArt";
 import { useCart } from "@/components/cart/CartProvider";
+import { Swatches } from "@/components/shop/ProductCard";
 import { Sheet } from "@/components/ui/Sheet";
 import { buttonClass } from "@/components/ui/primitives";
 import { formatPrice, MAX_QTY } from "@/lib/cart";
-import { CATEGORIES } from "@/lib/products";
+import { COLLECTION_BY_ID, familyKey } from "@/lib/products";
 import { EASE } from "@/lib/motion";
 import type { ArtView, Product } from "@/lib/types";
 
@@ -18,27 +19,42 @@ const VIEWS: { id: ArtView; label: string }[] = [
 ];
 
 export function QuickView({
+  items,
   product,
+  onPick,
   open,
   onClose,
 }: {
+  /** All colours of the product; one entry when it has no colour options. */
+  items: Product[];
   product: Product | null;
+  onPick: (p: Product) => void;
   open: boolean;
   onClose: () => void;
 }) {
   return (
     <Sheet open={open} onClose={onClose} label={product ? `${product.name} details` : "Product details"} className="max-w-[560px]">
-      {/* Keyed so view and quantity reset per product. */}
-      {product && <Details key={product.id} product={product} onClose={onClose} />}
+      {/* Keyed by product (not colour) so view and quantity reset per product but survive a colour change. */}
+      {product && <Details key={familyKey(product)} items={items} product={product} onPick={onPick} onClose={onClose} />}
     </Sheet>
   );
 }
 
-function Details({ product, onClose }: { product: Product; onClose: () => void }) {
+function Details({
+  items,
+  product,
+  onPick,
+  onClose,
+}: {
+  items: Product[];
+  product: Product;
+  onPick: (p: Product) => void;
+  onClose: () => void;
+}) {
   const { add, openCart } = useCart();
   const [view, setView] = useState<ArtView>("front");
   const [qty, setQty] = useState(1);
-  const category = CATEGORIES.find((c) => c.id === product.category)?.label;
+  const category = COLLECTION_BY_ID.get(product.category)?.label;
 
   const addToCart = () => {
     add(product.id, qty);
@@ -65,7 +81,7 @@ function Details({ product, onClose }: { product: Product; onClose: () => void }
         <div className="relative aspect-[5/4] bg-paper-2">
           <AnimatePresence initial={false} mode="popLayout">
             <motion.div
-              key={view}
+              key={`${view}-${product.tone}`}
               className="absolute inset-[6%]"
               initial={{ opacity: 0, scale: 1.03 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -107,6 +123,13 @@ function Details({ product, onClose }: { product: Product; onClose: () => void }
             </div>
             <p className="pt-1.5 font-display text-[19px] font-semibold tabular-nums">{formatPrice(product.price)}</p>
           </div>
+
+          {items.length > 1 && (
+            <div className="mt-5 flex items-center gap-3">
+              <Swatches items={items} picked={product} onPick={onPick} />
+              <p className="eyebrow">{product.color}</p>
+            </div>
+          )}
 
           <p className="mt-6 text-[15px] leading-[1.7] text-ink-2">{product.description}</p>
 

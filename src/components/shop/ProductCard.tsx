@@ -5,6 +5,7 @@ import { Check, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ProductArt } from "@/components/art/ProductArt";
 import { useCart } from "@/components/cart/CartProvider";
+import { swatchOf } from "@/components/art/shared";
 import { formatPrice } from "@/lib/cart";
 import { EASE } from "@/lib/motion";
 import type { Product } from "@/lib/types";
@@ -22,7 +23,21 @@ export function useAddFeedback(ms = 1600) {
 
 const PILL = "h-10 rounded-full font-display text-[11.5px] font-semibold tracking-[0.06em] uppercase";
 
-export function ProductCard({ product, onQuickView }: { product: Product; onQuickView: () => void }) {
+/**
+ * One shop tile. `items` are the colours of one product (usually just one);
+ * `product` is the colour picked, which is what Add to cart adds.
+ */
+export function ProductCard({
+  items,
+  product,
+  onPick,
+  onQuickView,
+}: {
+  items: Product[];
+  product: Product;
+  onPick: (p: Product) => void;
+  onQuickView: () => void;
+}) {
   const { add } = useCart();
   const [added, flagAdded] = useAddFeedback();
 
@@ -83,7 +98,48 @@ export function ProductCard({ product, onQuickView }: { product: Product; onQuic
           {formatPrice(product.price)}
         </p>
       </div>
+      {items.length > 1 && <Swatches items={items} picked={product} onPick={onPick} className="mt-3" />}
     </article>
+  );
+}
+
+/** Colour picker: one dot per colour, the picked one ringed. */
+export function Swatches({
+  items,
+  picked,
+  onPick,
+  className,
+}: {
+  items: Product[];
+  picked: Product;
+  onPick: (p: Product) => void;
+  className?: string;
+}) {
+  return (
+    <div role="radiogroup" aria-label={`${picked.name} colour`} className={`flex flex-wrap gap-1 ${className ?? ""}`}>
+      {items.map((p) => {
+        const on = p.id === picked.id;
+        return (
+          <button
+            key={p.id}
+            type="button"
+            role="radio"
+            aria-checked={on}
+            aria-label={p.color}
+            title={p.color}
+            onClick={() => onPick(p)}
+            className={`grid size-7 place-items-center rounded-full ring-1 transition-[box-shadow,transform] duration-300 ease-quint ring-inset active:scale-90 ${
+              on ? "ring-ink" : "ring-transparent hover:ring-line-2"
+            }`}
+          >
+            <span
+              className="size-[18px] rounded-full shadow-[inset_0_0_0_1px_rgb(21_20_19/0.14)]"
+              style={{ background: swatchOf(p.tone) }}
+            />
+          </button>
+        );
+      })}
+    </div>
   );
 }
 

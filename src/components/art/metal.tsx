@@ -84,7 +84,7 @@ export const backArc = (cx: number, rx: number, y: number, e = ry(rx)) =>
   `M${cx - rx},${y} A${rx},${r2(e)} 0 0 1 ${cx + rx},${y}`;
 
 /** Brushed steel: crisp window reflection ~27% in, secondary reflection, core shadow, rim light. */
-const brushed = (t: Ramp): Stop[] => [
+export const brushed = (t: Ramp): Stop[] => [
   [0, t.lo],
   [0.05, t.mid],
   [0.15, t.hi],
@@ -483,4 +483,198 @@ const jug: ArtRenderer = ({ tone, view, uid }) => {
   );
 };
 
-export const METAL_ART: ArtMap = { flask, bottle, jug };
+/* ---------- Kettles: domed whistling kettle and slim pour-over kettle ---------- */
+
+// Phenolic handle, knob and whistle cap: black, with a lifted highlight so it still reads as round.
+const BAKELITE: Ramp = { hi: "#7a7772", mid: "#33312e", lo: "#1f1e1c", deep: "#0e0e0d" };
+const ROD: Stop[] = [
+  [0, BAKELITE.deep],
+  [0.22, BAKELITE.hi],
+  [0.5, BAKELITE.mid],
+  [1, BAKELITE.deep],
+];
+
+/** Shared kettle gradients. Enamel coats get a sharper sheen than the matte bottles. */
+function KettleDefs({ id, tone, clip }: { id: (k: string) => string; tone: Tone; clip: string }) {
+  const t = ramp(tone);
+  return (
+    <defs>
+      <Grad id={id("fin")} stops={finish(tone)} />
+      <Grad id={id("steel")} stops={brushed(STEEL)} />
+      <Grad id={id("top")} x2={1} y2={1} stops={topFace(t)} />
+      <Grad id={id("ao")} x2={0} y2={1} stops={AO} />
+      <Grad id={id("light")} x2={0} y2={1} stops={[[0, "#fff", tone === "obsidian" ? 0.16 : 0.42], [1, "#fff", 0]]} />
+      <Grad id={id("rod")} x2={0} y2={1} stops={ROD} />
+      <Grad id={id("knob")} stops={matte(BAKELITE)} />
+      <Grad id={id("knobTop")} x2={1} y2={1} stops={topFace(BAKELITE)} />
+      <Radial id={id("hl")} stops={[[0, "#fff", tone === "obsidian" ? 0.2 : 0.55], [1, "#fff", 0]]} />
+      <clipPath id={id("clip")}>
+        <path d={clip} />
+      </clipPath>
+      {tone === "steel" && <BrushGrain id={id("grain")} />}
+    </defs>
+  );
+}
+
+/** Black phenolic knob on a short stem, its top at `y`. */
+function Knob({ cx, y, r, url }: { cx: number; y: number; r: number; url: (k: string) => string }) {
+  return (
+    <g>
+      <path d={side(cx, r * 0.45, y + 8, y + 22)} fill={url("knob")} />
+      <path d={side(cx, r, y, y + 9)} fill={url("knob")} />
+      <ellipse cx={cx} cy={y} rx={r} ry={ry(r)} fill={url("knobTop")} />
+      <path d={backArc(cx, r - 1, y)} fill="none" stroke="#fff" strokeOpacity={0.3} />
+    </g>
+  );
+}
+
+const kettle: ArtRenderer = ({ tone, view, uid }) => {
+  const id = (k: string) => `${uid}-${k}`;
+  const url = (k: string) => `url(#${id(k)})`;
+  const cx = 200;
+  // The alt view turns the kettle round: spout on the left, handle folded back.
+  const s = view === "alt" ? -1 : 1;
+  const X = (dx: number) => cx + s * dx;
+  const Rb = 104;
+  const eb = ry(Rb);
+  const yb = r2(GROUND_Y - 1 - eb);
+  const top = 268;
+  const Rt = 50;
+  const body =
+    `M${cx - Rt},${top} C${cx - 86},${top + 6} ${cx - 115},${top + 44} ${cx - 116},${top + 100} ` +
+    `C${cx - 117},${yb - 34} ${cx - 111},${yb - 8} ${cx - Rb},${yb} A${Rb},${eb} 0 0 0 ${cx + Rb},${yb} ` +
+    `C${cx + 111},${yb - 8} ${cx + 117},${yb - 34} ${cx + 116},${top + 100} C${cx + 115},${top + 44} ${cx + 86},${top + 6} ${cx + Rt},${top} Z`;
+  const spout = `M${X(96)},368 C${X(126)},356 ${X(149)},328 ${X(159)},298 L${X(176)},304 C${X(167)},350 ${X(141)},400 ${X(106)},422 Z`;
+  const lidR = 52;
+  const lidY = 260;
+  const dome =
+    `M${cx - lidR},${lidY} C${cx - 50},${lidY - 12} ${cx - 28},${lidY - 18} ${cx},${lidY - 18} ` +
+    `C${cx + 28},${lidY - 18} ${cx + 50},${lidY - 12} ${cx + lidR},${lidY} A${lidR},${ry(lidR)} 0 0 1 ${cx - lidR},${lidY} Z`;
+  const up = view === "front";
+  const hTop = up ? 194 : 240;
+  const wire =
+    `M${cx - 82},292 C${cx - 86},${up ? 240 : 266} ${cx - 64},${hTop + 6} ${cx - 36},${hTop} L${cx + 36},${hTop} ` +
+    `C${cx + 64},${hTop + 6} ${cx + 86},${up ? 240 : 266} ${cx + 82},292`;
+
+  const handle = (
+    <g>
+      <path d={wire} fill="none" stroke="#000" strokeOpacity={0.22} strokeWidth={6.5} strokeLinecap="round" transform="translate(1.2 1.6)" />
+      <path d={wire} fill="none" stroke={STEEL.lo} strokeWidth={5.5} strokeLinecap="round" />
+      <path d={wire} fill="none" stroke={STEEL.hi} strokeWidth={1.6} strokeLinecap="round" transform="translate(-0.8 -1.1)" />
+      <rect x={cx - 47} y={hTop - 12} width={94} height={24} rx={12} fill={url("rod")} />
+      <path d={`M${cx - 38},${hTop - 7} L${cx + 38},${hTop - 7}`} stroke="#fff" strokeOpacity={0.22} strokeWidth={1.4} strokeLinecap="round" />
+    </g>
+  );
+
+  return (
+    <g>
+      <KettleDefs id={id} tone={tone} clip={body} />
+      <defs>
+        <Grad id={id("sp")} x1={s > 0 ? 0 : 1} x2={s > 0 ? 1 : 0} y2={0.45} stops={finish(tone)} />
+      </defs>
+
+      <ContactShadow id={id("cs")} cx={cx + 10} rx={Rb * 1.45} ry={12} opacity={0.24} />
+      <ContactShadow id={id("cs2")} cx={cx} cy={GROUND_Y - 0.5} rx={Rb * 0.95} ry={3.5} opacity={0.5} />
+
+      {!up && handle}
+
+      <path d={body} fill={url("fin")} />
+      <g clipPath={url("clip")}>
+        {tone === "steel" && (
+          <rect x={cx - 117} y={top} width={234} height={GROUND_Y - top} filter={url("grain")} opacity={0.16} style={{ mixBlendMode: "overlay" }} />
+        )}
+        <rect x={cx - 117} y={top} width={234} height={GROUND_Y - top} fill={url("ao")} />
+        {/* The shoulder faces the light, so it reads brighter than the walls. */}
+        <rect x={cx - 117} y={top} width={234} height={74} fill={url("light")} />
+        <ellipse cx={cx - 50} cy={top + 46} rx={46} ry={32} fill={url("hl")} />
+        {tone !== "steel" && (
+          <g fill="#fff">
+            <ellipse cx={cx - 72} cy={366} rx={4.5} ry={50} opacity={tone === "obsidian" ? 0.16 : 0.42} />
+            <ellipse cx={cx + 94} cy={372} rx={2.5} ry={36} opacity={0.14} />
+          </g>
+        )}
+        <path d={frontArc(cx, 110, yb - 14, ry(110))} fill="none" stroke="#000" strokeOpacity={0.18} />
+        <path d={frontArc(cx, 110, yb - 13, ry(110))} fill="none" stroke="#fff" strokeOpacity={tone === "obsidian" ? 0.08 : 0.3} />
+        <ellipse cx={X(104)} cy={424} rx={18} ry={7} fill="#000" opacity={0.16} />
+      </g>
+      {up && <Wordmark cx={cx} y={404} tone={tone} />}
+
+      {/* Spout with its whistle cap. */}
+      <path d={spout} fill={url("sp")} />
+      <path d={spout} fill={url("ao")} opacity={0.4} />
+      <path d={`M${X(98)},372 C${X(127)},360 ${X(149)},331 ${X(158)},302`} fill="none" stroke="#fff" strokeOpacity={tone === "obsidian" ? 0.2 : 0.55} strokeWidth={1.4} />
+      <g transform={`translate(${X(170)} 296) rotate(${s * 21})`}>
+        <rect x={-14} y={-10} width={28} height={19} rx={6} fill={url("knob")} />
+        <path d="M-9 -6.5 L9 -6.5" stroke="#fff" strokeOpacity={0.3} strokeWidth={1.3} strokeLinecap="round" />
+      </g>
+
+      {/* Lid: flange, dome and knob. */}
+      <path d={side(cx, lidR, lidY, lidY + 8)} fill={url("fin")} />
+      <path d={frontArc(cx, lidR, lidY + 8)} fill="none" stroke="#000" strokeOpacity={0.3} />
+      <path d={dome} fill={url("fin")} />
+      <path d={dome} fill={url("light")} />
+      <Knob cx={cx} y={220} r={16} url={url} />
+
+      {up && handle}
+    </g>
+  );
+};
+
+const gooseneck: ArtRenderer = ({ tone, view, uid }) => {
+  const id = (k: string) => `${uid}-${k}`;
+  const url = (k: string) => `url(#${id(k)})`;
+  const cx = 200;
+  const s = view === "alt" ? -1 : 1;
+  const X = (dx: number) => cx + s * dx;
+  const R = 76;
+  const Rt = 66;
+  const top = 300;
+  const e = ry(R);
+  const yb = r2(GROUND_Y - 1 - e);
+  const body = `M${cx - Rt},${top} L${cx - R},${yb} A${R},${e} 0 0 0 ${cx + R},${yb} L${cx + Rt},${top} Z`;
+  const spout = `M${X(64)},430 C${X(100)},428 ${X(108)},392 ${X(112)},350 C${X(116)},306 ${X(140)},282 ${X(164)},304`;
+  const handle = `M${X(-62)},320 C${X(-114)},314 ${X(-126)},352 ${X(-122)},380 C${X(-118)},410 ${X(-104)},428 ${X(-72)},430`;
+  const t = TONES[tone];
+
+  return (
+    <g>
+      <KettleDefs id={id} tone={tone} clip={body} />
+      <ContactShadow id={id("cs")} cx={cx + 12} rx={R * 1.6} ry={11} opacity={0.24} />
+      <ContactShadow id={id("cs2")} cx={cx} cy={GROUND_Y - 0.5} rx={R * 0.95} ry={3.2} opacity={0.5} />
+
+      {/* Handle behind the body edge. */}
+      <path d={handle} fill="none" stroke="#000" strokeOpacity={0.2} strokeWidth={17} strokeLinecap="round" transform="translate(2 2)" />
+      <path d={handle} fill="none" stroke={BAKELITE.mid} strokeWidth={16} strokeLinecap="round" />
+      <path d={handle} fill="none" stroke={BAKELITE.hi} strokeOpacity={0.55} strokeWidth={2} strokeLinecap="round" transform={`translate(${s * -3} -3)`} />
+
+      <path d={body} fill={url("fin")} />
+      <g clipPath={url("clip")}>
+        {tone === "steel" && (
+          <rect x={cx - R} y={top} width={2 * R} height={GROUND_Y - top} filter={url("grain")} opacity={0.16} style={{ mixBlendMode: "overlay" }} />
+        )}
+        <rect x={cx - R} y={top} width={2 * R} height={GROUND_Y - top} fill={url("ao")} />
+        <ellipse cx={cx - R * 0.42} cy={top + 28} rx={R * 0.5} ry={26} fill={url("hl")} />
+        <path d={frontArc(cx, R, yb - 13)} fill="none" stroke="#000" strokeOpacity={0.16} />
+        <path d={frontArc(cx, R, yb - 12)} fill="none" stroke="#fff" strokeOpacity={tone === "obsidian" ? 0.08 : 0.32} />
+      </g>
+      {view === "front" && <Wordmark cx={cx} y={398} tone={tone} />}
+
+      {/* Shoulder, lid and knob. */}
+      <ellipse cx={cx} cy={top} rx={Rt} ry={ry(Rt)} fill={url("top")} />
+      <path d={backArc(cx, Rt - 1, top)} fill="none" stroke="#fff" strokeOpacity={tone === "obsidian" ? 0.16 : 0.6} />
+      <path d={side(cx, 46, 290, 300)} fill={url("fin")} />
+      <ellipse cx={cx} cy={290} rx={46} ry={ry(46)} fill={url("top")} />
+      <path d={frontArc(cx, 46, 300)} fill="none" stroke="#000" strokeOpacity={0.32} />
+      <Knob cx={cx} y={266} r={13} url={url} />
+
+      {/* Gooseneck spout: one tube, lit along its upper edge. */}
+      <ellipse cx={X(66)} cy={430} rx={9} ry={10} fill={t.lo} />
+      <path d={spout} fill="none" stroke="#000" strokeOpacity={0.2} strokeWidth={11} strokeLinecap="round" transform="translate(1.5 2)" />
+      <path d={spout} fill="none" stroke={t.lo} strokeWidth={10} strokeLinecap="round" />
+      <path d={spout} fill="none" stroke={t.mid} strokeWidth={6} strokeLinecap="round" transform={`translate(${s * -1} -1)`} />
+      <path d={spout} fill="none" stroke={t.hi} strokeOpacity={0.9} strokeWidth={1.6} strokeLinecap="round" transform={`translate(${s * -2.4} -2.6)`} />
+    </g>
+  );
+};
+
+export const METAL_ART: ArtMap = { flask, bottle, jug, kettle, gooseneck };
