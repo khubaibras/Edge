@@ -3,13 +3,13 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Menu, MessageCircle, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useCart } from "@/components/cart/CartProvider";
-import { useActiveCollection } from "@/components/shop/useActiveSection";
 import { buttonClass } from "@/components/ui/primitives";
 import { CHAT_LINK } from "@/lib/contact";
 import { EASE, SPRING, SPRING_SOFT } from "@/lib/motion";
-import { COLLECTIONS, familiesIn } from "@/lib/products";
+import { COLLECTIONS, collectionHref } from "@/lib/products";
 import type { Category } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -39,9 +39,10 @@ const PAGE_LINKS: Record<NavVariant, { href: string; label: string }[]> = {
 
 const LINK = "font-display text-[12px] font-semibold uppercase tracking-[0.07em]";
 
-/** True while the cobalt hero is behind the bar, so the bar can wear the same colour. */
-function useOverHero() {
-  const [over, setOver] = useState(true);
+/** True while the cobalt hero is behind the bar, so the bar can wear the same colour. Re-checked on every page change. */
+function useOverHero(pathname: string) {
+  // Only home and the shop landing open with a cobalt hero; every other page starts on paper.
+  const [over, setOver] = useState(pathname === "/" || pathname === "/shop");
   useEffect(() => {
     const hero = document.getElementById("top");
     const onScroll = () => setOver(!!hero && hero.getBoundingClientRect().bottom > 64);
@@ -53,42 +54,14 @@ function useOverHero() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [pathname]);
   return over;
-}
-
-/** Collection link: a same-page jump on the shop, a page change from home. */
-function CollectionLink({
-  variant,
-  slug,
-  className,
-  onClick,
-  current,
-  children,
-}: {
-  variant: NavVariant;
-  slug: string;
-  className?: string;
-  onClick?: () => void;
-  current?: boolean;
-  children: React.ReactNode;
-}) {
-  const props = { className, onClick, "aria-current": current ? ("true" as const) : undefined };
-  return variant === "shop" ? (
-    <a href={`#${slug}`} {...props}>
-      {children}
-    </a>
-  ) : (
-    <Link href={`/shop#${slug}`} {...props}>
-      {children}
-    </Link>
-  );
 }
 
 export function Navbar({ variant = "home" }: { variant?: NavVariant }) {
   const { count, openCart } = useCart();
-  const overHero = useOverHero();
-  const active = useActiveCollection();
+  const pathname = usePathname();
+  const overHero = useOverHero(pathname);
   const [menuOpen, setMenuOpen] = useState(false);
   const onBrand = overHero && !menuOpen;
   // Home is a brand page: it offers the shop, and only shows the cart once something is in it.
@@ -108,7 +81,7 @@ export function Navbar({ variant = "home" }: { variant?: NavVariant }) {
   }, [menuOpen]);
 
   const close = () => setMenuOpen(false);
-  const isActive = (id: Category) => variant === "shop" && active === id;
+  const isActive = (id: Category) => pathname.startsWith(collectionHref(id));
 
   return (
     <header
@@ -136,10 +109,9 @@ export function Navbar({ variant = "home" }: { variant?: NavVariant }) {
               const on = isActive(c.id);
               return (
                 <li key={c.id}>
-                  <CollectionLink
-                    variant={variant}
-                    slug={c.slug}
-                    current={on}
+                  <Link
+                    href={collectionHref(c.id)}
+                    aria-current={on ? "page" : undefined}
                     className={cn(
                       LINK,
                       "relative block px-2.5 py-2 whitespace-nowrap transition-opacity duration-300 xl:px-3.5",
@@ -154,7 +126,7 @@ export function Navbar({ variant = "home" }: { variant?: NavVariant }) {
                         transition={SPRING}
                       />
                     )}
-                  </CollectionLink>
+                  </Link>
                 </li>
               );
             })}
@@ -263,16 +235,15 @@ export function Navbar({ variant = "home" }: { variant?: NavVariant }) {
               <ul className="mt-1">
                 {COLLECTIONS.map((c) => (
                   <li key={c.id} className="border-b border-line">
-                    <CollectionLink
-                      variant={variant}
-                      slug={c.slug}
+                    <Link
+                      href={collectionHref(c.id)}
                       onClick={close}
-                      current={isActive(c.id)}
-                      className="flex items-baseline justify-between gap-4 py-3.5"
+                      aria-current={isActive(c.id) ? "page" : undefined}
+                      className="flex items-center justify-between gap-4 py-3.5"
                     >
                       <span className="display text-[clamp(1.75rem,8.6vw,2.5rem)]">{c.label}</span>
-                      <span className="eyebrow tabular-nums">{familiesIn(c.id).length}</span>
-                    </CollectionLink>
+                      <ArrowRight aria-hidden className="size-4 text-mute" strokeWidth={2} />
+                    </Link>
                   </li>
                 ))}
               </ul>

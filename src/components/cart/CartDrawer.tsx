@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, MessageCircle, Minus, Plus, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ProductArt } from "@/components/art/ProductArt";
 import { useCart } from "@/components/cart/CartProvider";
@@ -37,6 +37,7 @@ export function CartDrawer() {
   const title = useRef<HTMLHeadingElement>(null);
   const shownStep = useRef(step);
   const router = useRouter();
+  const pathname = usePathname();
 
   // Back to the bag once the close animation is done.
   useEffect(() => {
@@ -68,12 +69,10 @@ export function CartDrawer() {
     setStep("sent");
   };
 
-  // On the shop, scroll to the first shelf; anywhere else, go to the shop.
+  // Already in the shop: just close. Anywhere else: go to the shop.
   const browse = () => {
     closeCart();
-    const shelf = document.querySelector("[data-collection]");
-    if (shelf) requestAnimationFrame(() => shelf.scrollIntoView({ block: "start" }));
-    else router.push("/shop");
+    if (!pathname.startsWith("/shop")) router.push("/shop");
   };
 
   return (
