@@ -13,8 +13,8 @@ import { COLLECTIONS, familiesIn } from "@/lib/products";
 import type { Category } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-/** "home" is the brand page; "shop" is the order page, where the cart lives. */
-export type NavVariant = "home" | "shop";
+/** "home" is the brand page; "shop" is any shop page (where the cart always shows); "wholesale" is the bulk query form. */
+export type NavVariant = "home" | "shop" | "wholesale";
 
 const PAGE_LINKS: Record<NavVariant, { href: string; label: string }[]> = {
   home: [
@@ -22,10 +22,17 @@ const PAGE_LINKS: Record<NavVariant, { href: string; label: string }[]> = {
     { href: "#top-selling", label: "Top selling" },
     { href: "#collections", label: "Our collections" },
     { href: "#about", label: "Questions" },
+    { href: "/wholesale", label: "Wholesale" },
   ],
   shop: [
     { href: "/", label: "Home" },
-    { href: "#how-to-order", label: "How ordering works" },
+    { href: "/shop", label: "All collections" },
+    { href: "/#about", label: "Questions" },
+    { href: "/wholesale", label: "Wholesale" },
+  ],
+  wholesale: [
+    { href: "/", label: "Home" },
+    { href: "/shop", label: "Shop" },
     { href: "/#about", label: "Questions" },
   ],
 };
@@ -155,6 +162,19 @@ export function Navbar({ variant = "home" }: { variant?: NavVariant }) {
         </nav>
 
         <div className="flex items-center gap-2 justify-self-end">
+          <Link
+            href="/wholesale"
+            onClick={close}
+            aria-current={variant === "wholesale" ? "page" : undefined}
+            className={cn(
+              LINK,
+              "relative mr-2 hidden px-1 py-2 whitespace-nowrap transition-opacity duration-300 lg:block",
+              variant === "wholesale" ? "opacity-100" : "opacity-75 hover:opacity-100",
+            )}
+          >
+            Wholesale
+            {variant === "wholesale" && <span aria-hidden className="absolute inset-x-1 bottom-0.5 h-[2px] bg-current" />}
+          </Link>
           {showCart ? (
             <button
               type="button"
@@ -266,7 +286,7 @@ export function Navbar({ variant = "home" }: { variant?: NavVariant }) {
                 ))}
               </ul>
               <div className="mt-6 grid gap-2">
-                {variant === "home" && (
+                {variant !== "shop" && (
                   <Link href="/shop" onClick={close} className={buttonClass("primary", "w-full")}>
                     Shop now
                     <ArrowRight aria-hidden className="size-4" strokeWidth={2} />

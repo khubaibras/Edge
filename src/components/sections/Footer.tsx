@@ -64,7 +64,8 @@ const LINKS = [
   { label: "Why us", href: "/#why" },
   { label: "Top selling", href: "/#top-selling" },
   { label: "Collections", href: "/#collections" },
-  { label: "Inside the flask", href: "/#craft" },
+  // { label: "Inside the flask", href: "/#craft" }, // Inside section is switched off for now.
+  { label: "Wholesale", href: "/wholesale" },
   { label: "Questions", href: "/#about" },
 ];
 
