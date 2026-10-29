@@ -105,12 +105,12 @@ export function About() {
         <div className="grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-16">
           <Reveal className="lg:col-span-7">
             <h2 id="about-title">
-              <span className="display block text-[clamp(3.25rem,7.4vw,7rem)]">About</span>
-              <span className="mt-2 block font-serif text-[clamp(1.5rem,2.6vw,2.375rem)] leading-[1.15] tracking-[-0.01em] text-ink-2 italic">
+              <span className="display block text-[clamp(3rem,6.4vw,6rem)]">About</span>
+              <span className="mt-2 block font-serif text-[clamp(1.375rem,2.2vw,2rem)] leading-[1.15] tracking-[-0.01em] text-ink-2 italic">
                 KROMA, and how ordering works
               </span>
             </h2>
-            <p className="mt-8 max-w-[38rem] text-[clamp(1.125rem,1.5vw,1.3125rem)] leading-[1.6] text-ink">
+            <p className="mt-8 max-w-[38rem] text-[clamp(1.0625rem,1.4vw,1.25rem)] leading-[1.6] text-ink">
               KROMA sells tea, drink and dinner wares in glass, stovetop kettles, and insulated steel flasks and
               bottles.
             </p>
@@ -190,8 +190,8 @@ export function OrderCta() {
       <div className="shell grid gap-10 py-20 sm:py-24 lg:grid-cols-12 lg:items-center lg:py-28">
         <Reveal className="lg:col-span-7">
           <h2 id="order-cta-title">
-            <span className="display block text-[clamp(3rem,6.6vw,6.25rem)]">Order today,</span>
-            <span className="mt-2 block font-serif text-[clamp(1.75rem,3.2vw,3rem)] leading-[1.1] tracking-[-0.01em] italic">
+            <span className="display block text-[clamp(3rem,6.4vw,6rem)]">Order today,</span>
+            <span className="mt-2 block font-serif text-[clamp(1.5rem,2.6vw,2.375rem)] leading-[1.1] tracking-[-0.01em] italic">
               pay when it arrives.
             </span>
           </h2>

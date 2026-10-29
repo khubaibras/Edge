@@ -23,7 +23,7 @@ export function useAddFeedback(ms = 1600) {
   return [added, () => setAdded(true)] as const;
 }
 
-const PILL = "h-10 rounded-full font-display text-[11.5px] font-semibold tracking-[0.06em] uppercase";
+const PILL = "h-10 rounded-full font-display text-[12px] font-semibold tracking-[0.06em] uppercase";
 
 /**
  * One shop tile. `items` are the colours of one product (usually just one);

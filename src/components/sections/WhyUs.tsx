@@ -99,7 +99,7 @@ export function WhyUs() {
     >
       <div className="shell grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
         <Reveal className="lg:col-span-5">
-          <h2 id="why-title" className="display text-[clamp(3.25rem,6.4vw,6rem)]">
+          <h2 id="why-title" className="display text-[clamp(3rem,6.4vw,6rem)]">
             Why us?
           </h2>
 

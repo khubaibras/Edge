@@ -13,7 +13,7 @@ export function TopSelling() {
       <div className="shell">
         <Reveal className="flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
           <h2 id="top-selling-title">
-            <span className="display block text-[clamp(3.25rem,6.4vw,6rem)]">Top Selling</span>
+            <span className="display block text-[clamp(3rem,6.4vw,6rem)]">Top Selling</span>
             <span className="mt-2 block font-serif text-[clamp(1.375rem,2.2vw,2rem)] leading-[1.15] tracking-[-0.01em] text-ink-2 italic">
               what people order most
             </span>
