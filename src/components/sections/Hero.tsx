@@ -401,14 +401,14 @@ function Dot({
   );
 }
 
-/** Rotating "order on WhatsApp" badge: a real click-to-chat link. */
+/** Rotating "contact us" badge: a real click-to-chat link. */
 function ChatBadge({ className }: { className?: string }) {
   return (
     <a
       href={CHAT_LINK}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat with KROMA on WhatsApp"
+      aria-label="Contact KROMA"
       className={cn("group relative size-[112px] place-items-center", className)}
     >
       <svg viewBox="0 0 100 100" aria-hidden className="absolute inset-0 size-full motion-safe:animate-spin-slow">
@@ -417,7 +417,7 @@ function ChatBadge({ className }: { className?: string }) {
         </defs>
         <text className="fill-white font-mono text-[8.6px] font-medium uppercase">
           <textPath href="#chat-badge-ring" textLength="244" lengthAdjust="spacing">
-            Order on WhatsApp · Cash on delivery ·
+            Contact us · Orders and questions ·
           </textPath>
         </text>
       </svg>

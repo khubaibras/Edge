@@ -1,24 +1,22 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer, OrderSteps } from "@/components/sections/Footer";
-import { ShopCollections } from "@/components/shop/ShopCollections";
 import { ShopHero } from "@/components/shop/ShopHero";
 
 export const metadata: Metadata = {
   title: "Shop — KROMA",
   description:
-    "Tea, drink and dinner wares in glass, stovetop kettles, flasks and bottles. Add to cart and order on WhatsApp, cash on delivery across Pakistan.",
+    "Tea, drink and dinner wares in glass, kettles, flasks and bottles. Pick a collection, add to cart and check out.",
 };
 
-/** Order page: every product, shelved by collection. The cart lives here. */
+/** Shop landing: the five collections, each opening its own page. */
 export default function ShopPage() {
   return (
     <>
       <Navbar variant="shop" />
       <main>
         <ShopHero />
-        <ShopCollections />
-        <section aria-label="How ordering works" className="border-t border-line py-20 sm:py-24">
+        <section aria-label="How ordering works" className="py-16 sm:py-20">
           <div className="shell">
             <OrderSteps id="how-to-order" />
           </div>

@@ -4,10 +4,8 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Scene } from "@/components/art/Scene";
 import { buttonClass, Reveal, SectionHeader } from "@/components/ui/primitives";
-import { COLLECTIONS, collectionHref, familiesIn } from "@/lib/products";
+import { COLLECTIONS, collectionHref } from "@/lib/products";
 import { cn } from "@/lib/utils";
-
-const pad = (n: number) => String(n).padStart(2, "0");
 
 export function Collections() {
   return (
@@ -23,7 +21,6 @@ export function Collections() {
         <ol className="mt-12 grid gap-14 sm:mt-16 lg:gap-10">
           {COLLECTIONS.map((c, i) => {
             const flip = i % 2 === 1;
-            const count = familiesIn(c.id).length;
             return (
               <li key={c.id} className="grid items-center gap-6 lg:grid-cols-12 lg:gap-12">
                 <Reveal className={cn("lg:col-span-7", flip && "lg:order-2")}>
@@ -42,10 +39,7 @@ export function Collections() {
                 </Reveal>
 
                 <Reveal delay={0.08} className={cn("lg:col-span-5", flip ? "lg:order-1 lg:pr-4" : "lg:pl-4")}>
-                  <p className="eyebrow tabular-nums">
-                    {pad(i + 1)} / {pad(COLLECTIONS.length)} · {count} products
-                  </p>
-                  <h3 className="mt-3 font-display text-[clamp(2.125rem,3.6vw,3.5rem)] leading-[1] font-bold tracking-[-0.025em]">
+                  <h3 className="font-display text-[clamp(2.125rem,3.6vw,3.5rem)] leading-[1] font-bold tracking-[-0.025em]">
                     {c.label}
                   </h3>
                   <span aria-hidden className="mt-4 block h-[3px] w-14 bg-brand" />

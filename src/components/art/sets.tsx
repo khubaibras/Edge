@@ -135,13 +135,13 @@ export const ENSEMBLES: Record<Category, Ensemble> = {
     ],
   },
   kettles: {
-    box: [46, 185, 550, 327],
+    box: [55, 195, 530, 315],
     pieces: [
-      { kind: "kettle", tone: "sage", view: "alt", x: 250, g: 352, s: 0.56 },
-      { kind: "kettle", tone: "obsidian", x: 398, g: 356, s: 0.56 },
-      { kind: "kettle", tone: "stone", view: "alt", x: 172, g: 452, s: 0.6 },
-      { kind: "kettle", tone: "steel", x: 470, g: 456, s: 0.6 },
-      { kind: "kettle", tone: "terracotta", x: 320, g: 496, s: 0.72 },
+      { kind: "kettle", tone: "sage", view: "alt", x: 236, g: 360, s: 0.5 },
+      { kind: "kettle", tone: "obsidian", x: 404, g: 362, s: 0.5 },
+      { kind: "kettle", tone: "stone", view: "alt", x: 150, g: 470, s: 0.6 },
+      { kind: "kettle", tone: "steel", x: 490, g: 472, s: 0.6 },
+      { kind: "kettle", tone: "terracotta", x: 320, g: 500, s: 0.7 },
     ],
   },
   flasks: {

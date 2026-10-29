@@ -2,7 +2,7 @@ import type { Category, Product, Spec, Tone } from "./types";
 
 export interface Collection {
   id: Category;
-  /** URL anchor on the shop page: /shop#tea-wares */
+  /** URL of the collection's page: /shop/tea-wares */
   slug: string;
   label: string;
   /** Italic serif line under the name. */
@@ -510,6 +510,13 @@ export const TOP_SELLING = [
   return p;
 });
 
-/** Link that opens a product's details on the shop page. */
-export const productHref = (p: Product) => `/shop#p-${p.id}`;
-export const collectionHref = (id: Category) => `/shop#${COLLECTION_BY_ID.get(id)?.slug ?? ""}`;
+export const COLLECTION_BY_SLUG = new Map(COLLECTIONS.map((c) => [c.slug, c]));
+
+/** A collection's own page: /shop/kettles */
+export const collectionHref = (id: Category) => `/shop/${COLLECTION_BY_ID.get(id)?.slug ?? ""}`;
+
+/** A product's page, inside its collection: /shop/kettles/colour-kettle-sage */
+export const productHref = (p: Product) => `${collectionHref(p.category)}/${p.id}`;
+
+/** All colours of a product (just the product itself when it has none). */
+export const familyOf = (p: Product) => (p.family ? PRODUCTS.filter((x) => x.family === p.family) : [p]);

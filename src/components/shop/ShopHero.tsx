@@ -1,21 +1,18 @@
 "use client";
 
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { ArrowDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { GroupArt } from "@/components/art/ProductArt";
-import { FREE_SHIPPING_FROM, SHIPPING_FEE, formatPrice } from "@/lib/cart";
 import { EASE } from "@/lib/motion";
-import { COLLECTIONS, familiesIn } from "@/lib/products";
-import { PAYMENT_METHOD } from "@/lib/whatsapp";
+import { COLLECTIONS, collectionHref } from "@/lib/products";
 import { cn } from "@/lib/utils";
 
 const CYCLE_MS = 4200;
 const pad = (n: number) => String(n).padStart(2, "0");
 
-const FACTS = [`Delivery ${formatPrice(SHIPPING_FEE)}`, `Free from ${formatPrice(FREE_SHIPPING_FROM)}`, PAYMENT_METHOD];
-
-/** Order page opener: the five collections as panels that open up on hover and jump to their shelf. */
+/** Shop opener: the five collections as panels that open up on hover; each opens its collection page. */
 export function ShopHero() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
@@ -46,9 +43,9 @@ export function ShopHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: EASE }}
           >
-            <span className="display block text-[clamp(5rem,12vw,11.5rem)]">Order</span>
-            <span className="mt-2 block font-serif text-[clamp(1.625rem,2.8vw,2.625rem)] leading-[1.15] tracking-[-0.01em] italic">
-              five collections, one cart
+            <span className="display block text-[clamp(4rem,9vw,8.5rem)]">Order</span>
+            <span className="mt-2 block font-serif text-[clamp(1.5rem,2.6vw,2.375rem)] leading-[1.15] tracking-[-0.01em] italic">
+              pick a collection to start
             </span>
           </motion.h1>
           <motion.div
@@ -57,20 +54,10 @@ export function ShopHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
           >
-            <p className="text-[15px] leading-relaxed text-white/85">
-              Pick a collection, add what you like, and send your cart to us on WhatsApp. You pay in cash when it
-              arrives.
+            <p className="text-[16px] leading-relaxed text-white/85">
+              Pick a collection to see everything in it, add what you like to your cart and check out when you&apos;re
+              ready.
             </p>
-            <ul className="mt-5 flex flex-wrap gap-2">
-              {FACTS.map((f) => (
-                <li
-                  key={f}
-                  className="rounded-full border border-white/40 px-3 py-1.5 font-mono text-[10.5px] leading-none font-medium tracking-[0.06em] uppercase"
-                >
-                  {f}
-                </li>
-              ))}
-            </ul>
           </motion.div>
         </div>
 
@@ -92,8 +79,8 @@ export function ShopHero() {
                 animate={{ flexGrow: on ? 3.3 : 1 }}
                 transition={{ duration: 0.75, ease: EASE }}
               >
-                <a
-                  href={`#${c.slug}`}
+                <Link
+                  href={collectionHref(c.id)}
                   onPointerEnter={() => setActive(i)}
                   onFocus={() => setActive(i)}
                   className={cn(
@@ -124,7 +111,7 @@ export function ShopHero() {
                         animate={{ opacity: on ? 1 : 0, y: on ? 0 : 6 }}
                         transition={{ duration: 0.45, ease: EASE, delay: on ? 0.2 : 0 }}
                       >
-                        {c.tagline} · {familiesIn(c.id).length} products
+                        {c.tagline}
                       </motion.span>
                     </span>
                     <motion.span
@@ -134,10 +121,10 @@ export function ShopHero() {
                       animate={{ opacity: on ? 1 : 0, scale: on ? 1 : 0.6 }}
                       transition={{ duration: 0.4, ease: EASE, delay: on ? 0.15 : 0 }}
                     >
-                      <ArrowDown className="size-4" strokeWidth={2} />
+                      <ArrowRight className="size-4" strokeWidth={2} />
                     </motion.span>
                   </span>
-                </a>
+                </Link>
               </motion.li>
             );
           })}
@@ -147,8 +134,8 @@ export function ShopHero() {
         <ul className="-mx-5 mt-8 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:hidden [&::-webkit-scrollbar]:hidden">
           {COLLECTIONS.map((c, i) => (
             <li key={c.id} className="w-[min(78vw,20rem)] shrink-0 snap-start">
-              <a
-                href={`#${c.slug}`}
+              <Link
+                href={collectionHref(c.id)}
                 className="relative block aspect-[4/5] overflow-hidden rounded-[4px] bg-white/[0.08] ring-1 ring-white/20 ring-inset"
               >
                 <span aria-hidden className="absolute inset-x-[4%] top-[12%] bottom-[24%]">
@@ -159,9 +146,9 @@ export function ShopHero() {
                 </span>
                 <span className="absolute inset-x-4 bottom-4">
                   <span className="block font-display text-[24px] leading-tight font-bold tracking-[-0.02em]">{c.label.replace("& ", "& ")}</span>
-                  <span className="mt-0.5 block font-serif text-[16px] text-white/85 italic">{c.tagline}</span>
+                  <span className="mt-0.5 block font-serif text-[17px] text-white/85 italic">{c.tagline}</span>
                 </span>
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

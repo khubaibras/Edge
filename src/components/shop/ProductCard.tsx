@@ -2,15 +2,17 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Plus } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ProductArt } from "@/components/art/ProductArt";
 import { useCart } from "@/components/cart/CartProvider";
 import { swatchOf } from "@/components/art/shared";
 import { formatPrice } from "@/lib/cart";
+import { productHref } from "@/lib/products";
 import { EASE } from "@/lib/motion";
 import type { Product } from "@/lib/types";
 
-/** Shows a brief "Added" confirmation after add(); shared with the hero and lookbook. */
+/** Shows a brief "Added" confirmation after add(); shared with the product page. */
 export function useAddFeedback(ms = 1600) {
   const [added, setAdded] = useState(false);
   useEffect(() => {
@@ -21,22 +23,20 @@ export function useAddFeedback(ms = 1600) {
   return [added, () => setAdded(true)] as const;
 }
 
-const PILL = "h-10 rounded-full font-display text-[11.5px] font-semibold tracking-[0.06em] uppercase";
+const PILL = "h-10 rounded-full font-display text-[12px] font-semibold tracking-[0.06em] uppercase";
 
 /**
  * One shop tile. `items` are the colours of one product (usually just one);
- * `product` is the colour picked, which is what Add to cart adds.
+ * `product` is the colour picked, which is what Add to cart adds and what Details opens.
  */
 export function ProductCard({
   items,
   product,
   onPick,
-  onQuickView,
 }: {
   items: Product[];
   product: Product;
   onPick: (p: Product) => void;
-  onQuickView: () => void;
 }) {
   const { add } = useCart();
   const [added, flagAdded] = useAddFeedback();
@@ -49,9 +49,8 @@ export function ProductCard({
   return (
     <article className="group">
       <div className="relative aspect-[4/5] overflow-hidden rounded-[4px] bg-paper-2">
-        <button
-          type="button"
-          onClick={onQuickView}
+        <Link
+          href={productHref(product)}
           aria-label={`Details: ${product.name}`}
           className="absolute inset-0 rounded-[4px] outline-offset-[-2px]"
         >
@@ -61,17 +60,17 @@ export function ProductCard({
           <span className="absolute inset-[6%] scale-[1.03] opacity-0 transition-[opacity,scale] duration-700 ease-quint group-hover:scale-100 group-hover:opacity-100">
             <ProductArt kind={product.kind} tone={product.tone} view="alt" fit />
           </span>
-        </button>
+        </Link>
 
         {/* Hover actions on pointer devices; always-on add button on touch. */}
         <div className="absolute inset-x-3 bottom-3 grid grid-cols-2 gap-2 transition-[translate,opacity] duration-500 ease-quint max-[64rem]:hidden [@media(hover:hover)]:translate-y-3 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within:translate-y-0 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:translate-y-0 [@media(hover:hover)]:group-hover:opacity-100">
-          <button
-            type="button"
-            onClick={onQuickView}
-            className={`${PILL} border border-line-2 bg-paper/95 transition-colors duration-300 hover:border-ink`}
+          <Link
+            href={productHref(product)}
+            tabIndex={-1}
+            className={`${PILL} grid place-items-center border border-line-2 bg-paper/95 transition-colors duration-300 hover:border-ink`}
           >
             Details
-          </button>
+          </Link>
           <AddButton added={added} onClick={addToCart} name={product.name} />
         </div>
         <button
@@ -91,7 +90,11 @@ export function ProductCard({
 
       <div className="mt-4 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div className="min-w-0">
-          <h3 className="text-[15px] leading-snug font-medium">{product.name}</h3>
+          <h3 className="text-[15px] leading-snug font-medium">
+            <Link href={productHref(product)} className="underline-offset-4 hover:underline">
+              {product.name}
+            </Link>
+          </h3>
           <p className="mt-1 text-[13px] leading-snug text-mute">{product.subtitle}</p>
         </div>
         <p className="shrink-0 font-display text-[15px] leading-snug font-semibold tabular-nums">

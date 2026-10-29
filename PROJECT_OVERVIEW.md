@@ -1,6 +1,6 @@
 # KROMA: store for glass tableware, kettles and flasks
 
-> **Status (27 Oct 2026):** a two-page site, not launched yet: a brand home page and a separate order page (`/shop`). The production build, typecheck, lint and all 11 unit tests pass. The brand name, product catalog, prices and delivery terms are placeholders. See [Before launch](#before-launch).
+> **Status (27 Oct 2026):** not launched yet: a brand home page, a shop with one page per collection and one page per product, and a wholesale page. The production build, typecheck, lint and all 11 unit tests pass. The brand name, product catalog, prices and delivery terms are placeholders. See [Before launch](#before-launch).
 
 ## What it is
 
@@ -17,13 +17,13 @@ The site has no backend, no database and no online payment. A customer fills a c
 ## The two pages
 
 - **Home (`/`)** is the brand page. It shows the collections and the reasons to buy, but has no add-to-cart buttons. Every product and collection link leads to the order page.
-- **Order page (`/shop`)** is where all ordering happens: every product, shelved under its collection, with Add to cart, a details panel and the cart.
+- **Shop (`/shop`)** is where all ordering happens. `/shop` lists the five collections; each collection has its own page (`/shop/kettles`), and each product has its own page (`/shop/kettles/colour-kettle-sage`).
 
 The cart lives in React context in the root layout, so it carries over when moving between the two pages. Refreshing the page empties it.
 
 ## How an order works
 
-1. On `/shop` the customer adds products from a card or from a product's **Details** panel. Products that come in colours show swatches; the picked colour is what goes in the cart.
+1. On a collection page the customer adds products from a card, or opens a product's own page (**Details**) and adds it there. Products that come in colours show swatches; the picked colour is what goes in the cart.
 2. In the cart they can change quantities. A bar shows how far they are from free delivery.
 3. Checkout asks for name, mobile number, city, address and optional notes. The number must be a Pakistani mobile number (for example `0300 1234567`) and is rewritten as `+923001234567`.
 4. The review step shows the exact message that will be sent.
@@ -60,28 +60,31 @@ All paths are under `src/components/`.
 
 | Section | Anchor | What it does | Code |
 |---|---|---|---|
-| Nav | | The five collections (each opens that shelf on `/shop`) and a **Shop now** button. Once the cart has something in it, the button becomes **Cart**. On phones, a menu with the collections, page links and WhatsApp. | `layout/Navbar.tsx` |
+| Nav | | The five collections (each opens that collection's page), a **Wholesale** link and a **Shop now** button. Once the cart has something in it, the button becomes **Cart**. On phones, a menu with the collections, page links and WhatsApp. | `layout/Navbar.tsx` |
 | Hero | `#top` | Cobalt poster, one slide per collection. Each shows a group of products (e.g. five bottles in different colours) between two big words that name the collection, and a **Shop {collection}** button. Arrows, dots, swipe or arrow keys; autoplay pauses on hover, keyboard focus, while the cart is open, and for reduced-motion users. | `sections/Hero.tsx` |
 | Why us | `#why` | Four numbered reasons (glass crockery, flask hours, ordering on WhatsApp, cash on delivery) with a picture for each. Steps through on its own while in view. | `sections/WhyUs.tsx` |
-| Top selling | `#top-selling` | Scrolling row of products with arrows and a progress bar. Each card opens that product on `/shop`. | `sections/TopSelling.tsx` |
+| Top selling | `#top-selling` | Endless row of products that moves on its own and stops while pointed at. Each card opens that product's page. | `sections/TopSelling.tsx` |
 | Our collections | `#collections` | One row per collection, image and text alternating sides, with **View collection**. | `sections/Collections.tsx` |
-| Inside | `#craft` | The flask and the tumbler cut in half; tap a number to see what that part does. **View in shop** opens the product. | `sections/Craft.tsx`, `craft/` |
+| Inside | `#craft` | Switched off for now (commented out in `src/app/page.tsx`). The flask and the tumbler cut in half; tap a number to see what that part does. | `sections/Craft.tsx`, `craft/` |
 | About | `#about`, `#how-to-order` | WhatsApp contact card, the four ordering steps and the questions (delivery answers are in the questions). | `sections/Footer.tsx` (`About`, `OrderSteps`) |
-| Order today | | Cobalt closing band: **Shop the range** and the WhatsApp number. | `sections/Footer.tsx` (`OrderCta`) |
-| Footer | | Wordmark, page links and the WhatsApp number. | `sections/Footer.tsx` (`Footer`) |
+| Order today | | Cobalt closing band: **Shop the range** and **Contact us**. | `sections/Footer.tsx` (`OrderCta`) |
+| Footer | | Wordmark, page links and a **Contact us** button. No phone number is shown anywhere. | `sections/Footer.tsx` (`Footer`) |
 
-## Order page (`/shop`), top to bottom
+## Wholesale page (`/wholesale`)
 
-| Section | What it does | Code |
+A query form for bulk buyers: name, business, mobile, city, the collections they want (picked from `COLLECTIONS`), quantity and a free-text query. **Send query** opens the query as a WhatsApp message, like an order. Code: `src/app/wholesale/page.tsx`, `src/components/wholesale/WholesaleForm.tsx`, message and checks in `src/lib/wholesale.ts` (tested in `src/lib/wholesale.test.mjs`).
+
+## Shop pages
+
+| Page | What it shows | Code |
 |---|---|---|
-| Nav | Same collections, now jumping within the page and underlining the shelf you're on. **Cart** with a live count is always there. | `layout/Navbar.tsx` (`variant="shop"`) |
-| Hero | "Order" headline, the delivery facts, and five collection panels. The active panel opens wide; they cycle slowly until you point at one. On phones they become a swipeable row. | `shop/ShopHero.tsx` |
-| Collection bar | Phones and tablets only: sticky collection pills under the nav that follow the scroll. | `shop/ShopCollections.tsx` (`CollectionBar`) |
-| Shelves | One section per collection: a sticky side panel (name, description, group picture) next to the product grid. | `shop/ShopCollections.tsx`, `shop/ProductCard.tsx`, `shop/QuickView.tsx` |
-| How to order | The four ordering steps. | `sections/Footer.tsx` (`OrderSteps`) |
-| Cart | Side panel: cart → delivery details → review → sent. Mounted once for both pages. | `cart/CartDrawer.tsx`, `cart/CheckoutForm.tsx`, `cart/checkout.ts`, `Providers.tsx` |
+| `/shop` | "Order" headline and five collection panels; each opens that collection's page. The active panel opens wide; they cycle slowly until you point at one. On phones they become a swipeable row. Then the four ordering steps. | `app/shop/page.tsx`, `shop/ShopHero.tsx` |
+| `/shop/<collection>` | Name, tagline, description and group picture, then every product in that collection as cards (Add to cart, Details), the other four collections, and the ordering steps. | `app/shop/[collection]/page.tsx`, `shop/CollectionProducts.tsx`, `shop/ProductCard.tsx` |
+| `/shop/<collection>/<product id>` | Large picture with two views, name, price, colours, description, quantity and Add to cart, highlights and specs; then more from the same collection. Each colour is its own page, so the colour dots are links. | `app/shop/[collection]/[product]/page.tsx`, `shop/ProductDetails.tsx` |
 
-Links into the order page: `/shop#tea-wares` (and the other collection slugs) lands on that shelf; `/shop#p-<product id>` lands on that product with its colour picked and its details open.
+On every shop page the nav underlines the current collection and always shows **Cart**; on phones, sticky collection pills sit under the nav (`CollectionBar` in `shop/CollectionProducts.tsx`). The cart is a side panel (cart → delivery details → review → placed), mounted once for the whole site: `cart/CartDrawer.tsx`, `cart/CheckoutForm.tsx`, `cart/checkout.ts`, `Providers.tsx`. Its buttons say **Checkout** and **Place order**; placing the order opens the WhatsApp message.
+
+Collection slugs are in `COLLECTIONS`; links are built with `collectionHref` and `productHref` in `src/lib/products.ts`. All shop pages are prerendered at build time (`generateStaticParams`). The part of a collection or product page that reads the URL sits inside `<Suspense>` (with `shop/ShopSkeleton.tsx` as the placeholder), so navigations show the page frame straight away, as Next's instant-navigation check asks. `shop/ScrollReset.tsx` opens every collection and product page at its top; picking another colour on a product page keeps the scroll position.
 
 ## Where to change things
 
@@ -99,7 +102,7 @@ Links into the order page: `/shop#tea-wares` (and the other collection slugs) la
 | Group pictures (which pieces, colours, placement) | `ENSEMBLES` in `src/components/art/sets.tsx` |
 | Backdrop colours and words behind group pictures | `SCENES` in `src/components/art/Scene.tsx` |
 | Colours and fonts | `src/app/globals.css` (`@theme` tokens), `src/app/layout.tsx` (`next/font`) |
-| Page titles and descriptions | `metadata` in `src/app/layout.tsx` and `src/app/shop/page.tsx` |
+| Page titles and descriptions | `metadata` in `src/app/layout.tsx`, `src/app/shop/page.tsx` and `src/app/wholesale/page.tsx`; collection and product pages build theirs from the catalog |
 
 Prices, fees and the phone number each live in one constant. Changing one updates both pages, the cart totals and the WhatsApp message together.
 
@@ -107,7 +110,7 @@ Prices, fees and the phone number each live in one constant. Changing one update
 
 There are no photos. Each product is drawn in code as an SVG "studio render" in `src/components/art/`:
 
-- `metal.tsx`: flask, bottle, table jug, whistling kettle, pour-over kettle.
+- `metal.tsx`: flask, bottle, table jug, and the kettles (a tapered kettle on a black base, with a V lip or a gooseneck spout).
 - `glass.tsx`: tumbler, double-wall glass, carafe, coupe, plate, quarter plates, standing plate, bowl, tea cup, teapot, mug.
 - `sets.tsx`: products made of several pieces (tea set, water set, dinner set, dessert bowls) and the five collection group pictures (`ENSEMBLES`). Each group has a measured frame (`box`) so every group fills its space alike.
 - `shared.tsx`: finishes (`TONES`, including the coloured coats cobalt, sage, terracotta and sand), swatch colours and shadows.
@@ -116,7 +119,7 @@ There are no photos. Each product is drawn in code as an SVG "studio render" in 
 
 A product picks its drawing with `kind` and its finish with `tone`. Every drawing has a front view and an `alt` view, shown on hover.
 
-To switch to real photos later, replace `<ProductArt>` / `<GroupArt>` with `next/image` in `ProductCard`, `QuickView`, `CartDrawer`, `TopSelling`, `Hero`, `WhyUs`, `Scene` and `ShopHero`.
+To switch to real photos later, replace `<ProductArt>` / `<GroupArt>` with `next/image` in `ProductCard`, `ProductDetails`, `CartDrawer`, `TopSelling`, `Hero`, `WhyUs`, `Scene` and `ShopHero`.
 
 ## Running it
 
@@ -124,7 +127,7 @@ You need Node 22.18 or newer, because the tests rely on Node's built-in TypeScri
 
 ```
 npm install
-npm run dev      # http://localhost:3000 (home) and /shop (order page)
+npm run dev      # http://localhost:3000 (home), /shop, /wholesale
 npm test         # unit tests (node --test)
 npm run lint
 npm run build    # production build; both pages are fully static

@@ -36,8 +36,8 @@ const REASONS: { title: string; body: string; caption: string; visual: Visual }[
   },
   {
     title: "Order in one message",
-    body: "Your cart goes to us as one WhatsApp message. No account and no sign-up. We reply to confirm your order and when it will arrive.",
-    caption: "Ordered on WhatsApp",
+    body: "Your cart comes to us as one message. No account and no sign-up. We reply to confirm your order and when it will arrive.",
+    caption: "Ordered in one message",
     visual: "whatsapp",
   },
   {
@@ -99,7 +99,7 @@ export function WhyUs() {
     >
       <div className="shell grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
         <Reveal className="lg:col-span-5">
-          <h2 id="why-title" className="display text-[clamp(3.25rem,6.4vw,6rem)]">
+          <h2 id="why-title" className="display text-[clamp(3rem,6.4vw,6rem)]">
             Why us?
           </h2>
 

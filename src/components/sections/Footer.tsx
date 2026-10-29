@@ -4,7 +4,7 @@ import { ArrowRight, MessageCircle, Plus } from "lucide-react";
 import Link from "next/link";
 import { buttonClass, Reveal } from "@/components/ui/primitives";
 import { FREE_SHIPPING_FROM, SHIPPING_FEE, formatPrice } from "@/lib/cart";
-import { CHAT_LINK, PHONE_DISPLAY } from "@/lib/contact";
+import { CHAT_LINK } from "@/lib/contact";
 import { PRODUCTS } from "@/lib/products";
 import { PAYMENT_METHOD } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
 const STEPS = [
   { title: "Add to cart", body: `Pick what you like in the shop. Free delivery from ${formatPrice(FREE_SHIPPING_FROM)}.` },
   { title: "Add your details", body: "Name, mobile number, city and address." },
-  { title: "Send it on WhatsApp", body: "Your order opens as a WhatsApp message. Press send." },
-  { title: "Pay on delivery", body: "We confirm on WhatsApp. Pay cash when it arrives." },
+  { title: "Check out", body: "Review your order and place it. We reply to confirm." },
+  { title: "Pay on delivery", body: "Pay cash when your order arrives." },
 ];
 
 /** "A, B, C and D" */
@@ -27,7 +27,7 @@ const KETTLES = namesWhere((p) => p.category === "kettles");
 const FAQS = [
   {
     q: "Where do you deliver?",
-    a: "Anywhere in Pakistan. We confirm the delivery time for your city on WhatsApp when we reply to your order.",
+    a: "Anywhere in Pakistan. We confirm the delivery time for your city when we reply to your order.",
   },
   {
     q: "How much is delivery?",
@@ -39,7 +39,7 @@ const FAQS = [
   },
   {
     q: "How long does delivery take?",
-    a: "It depends on your city. We confirm the delivery time on WhatsApp when we reply to your order.",
+    a: "It depends on your city. We confirm the delivery time when we reply to your order.",
   },
   {
     q: "Is your crockery really all glass?",
@@ -64,7 +64,8 @@ const LINKS = [
   { label: "Why us", href: "/#why" },
   { label: "Top selling", href: "/#top-selling" },
   { label: "Collections", href: "/#collections" },
-  { label: "Inside the flask", href: "/#craft" },
+  // { label: "Inside the flask", href: "/#craft" }, // Inside section is switched off for now.
+  { label: "Wholesale", href: "/wholesale" },
   { label: "Questions", href: "/#about" },
 ];
 
@@ -104,12 +105,12 @@ export function About() {
         <div className="grid gap-12 lg:grid-cols-12 lg:items-end lg:gap-16">
           <Reveal className="lg:col-span-7">
             <h2 id="about-title">
-              <span className="display block text-[clamp(3.25rem,7.4vw,7rem)]">About</span>
-              <span className="mt-2 block font-serif text-[clamp(1.5rem,2.6vw,2.375rem)] leading-[1.15] tracking-[-0.01em] text-ink-2 italic">
+              <span className="display block text-[clamp(3rem,6.4vw,6rem)]">About</span>
+              <span className="mt-2 block font-serif text-[clamp(1.375rem,2.2vw,2rem)] leading-[1.15] tracking-[-0.01em] text-ink-2 italic">
                 KROMA, and how ordering works
               </span>
             </h2>
-            <p className="mt-8 max-w-[38rem] text-[clamp(1.125rem,1.5vw,1.3125rem)] leading-[1.6] text-ink">
+            <p className="mt-8 max-w-[38rem] text-[clamp(1.0625rem,1.4vw,1.25rem)] leading-[1.6] text-ink">
               KROMA sells tea, drink and dinner wares in glass, stovetop kettles, and insulated steel flasks and
               bottles.
             </p>
@@ -120,10 +121,7 @@ export function About() {
               <p className="font-mono text-[11px] leading-4 font-medium tracking-[0.06em] text-white/85 uppercase">
                 WhatsApp · orders and questions
               </p>
-              <p className="mt-5 font-display text-[clamp(1.875rem,3.2vw,2.75rem)] leading-none font-bold tracking-[-0.02em] whitespace-nowrap tabular-nums">
-                {PHONE_DISPLAY}
-              </p>
-              <p className="mt-3 max-w-[34ch] text-[15px] leading-relaxed text-white/85">
+              <p className="mt-5 max-w-[34ch] text-[15px] leading-relaxed text-white/85">
                 Message us about a product, an order, or delivery to your city.
               </p>
               <a
@@ -172,7 +170,7 @@ export function About() {
   );
 }
 
-/** Closing band after the questions: one push to the shop, one to WhatsApp. */
+/** Closing band after the questions: one push to the shop, one to contact us. */
 export function OrderCta() {
   return (
     <section
@@ -192,13 +190,13 @@ export function OrderCta() {
       <div className="shell grid gap-10 py-20 sm:py-24 lg:grid-cols-12 lg:items-center lg:py-28">
         <Reveal className="lg:col-span-7">
           <h2 id="order-cta-title">
-            <span className="display block text-[clamp(3rem,6.6vw,6.25rem)]">Order today,</span>
-            <span className="mt-2 block font-serif text-[clamp(1.75rem,3.2vw,3rem)] leading-[1.1] tracking-[-0.01em] italic">
+            <span className="display block text-[clamp(3rem,6.4vw,6rem)]">Order today,</span>
+            <span className="mt-2 block font-serif text-[clamp(1.5rem,2.6vw,2.375rem)] leading-[1.1] tracking-[-0.01em] italic">
               pay when it arrives.
             </span>
           </h2>
           <p className="mt-6 max-w-[46ch] text-[16px] leading-relaxed text-white/85">
-            Cash on delivery to every city in Pakistan. We confirm your order on WhatsApp before we send it, and
+            Cash on delivery to every city in Pakistan. We confirm your order before we send it, and
             delivery is free from {formatPrice(FREE_SHIPPING_FROM)}.
           </p>
         </Reveal>
@@ -207,9 +205,9 @@ export function OrderCta() {
             Shop the range
             <ArrowRight aria-hidden className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2} />
           </Link>
-          <a href={CHAT_LINK} target="_blank" rel="noopener noreferrer" className={buttonClass("outline-inverse", "tabular-nums")}>
+          <a href={CHAT_LINK} target="_blank" rel="noopener noreferrer" className={buttonClass("outline-inverse")}>
             <MessageCircle aria-hidden className="size-4" strokeWidth={2} />
-            WhatsApp {PHONE_DISPLAY}
+            Contact us
           </a>
         </Reveal>
       </div>
@@ -235,14 +233,10 @@ export function Footer({ className }: { className?: string }) {
             ))}
           </ul>
         </nav>
-        <div className="flex flex-col gap-1 text-[14px] sm:flex-row sm:items-center sm:gap-8">
-          <a
-            href={CHAT_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium tabular-nums underline-offset-4 hover:underline"
-          >
-            WhatsApp {PHONE_DISPLAY}
+        <div className="flex flex-col items-start gap-4 text-[14px] sm:flex-row sm:items-center sm:gap-8">
+          <a href={CHAT_LINK} target="_blank" rel="noopener noreferrer" className={buttonClass("secondary", "h-10 px-5")}>
+            <MessageCircle aria-hidden className="size-4" strokeWidth={2} />
+            Contact us
           </a>
           <p className="text-mute">© 2026 KROMA</p>
         </div>
