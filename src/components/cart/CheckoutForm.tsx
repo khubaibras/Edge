@@ -188,8 +188,8 @@ export function CheckoutForm({
         </fieldset>
 
         <p className="mt-6 rounded-[4px] bg-paper-2 px-4 py-3 text-[13px] leading-relaxed text-ink-2">
-          Payment: <span className="text-ink">{PAYMENT_METHOD}</span>. Next you&apos;ll see your order as a WhatsApp
-          message — send it to us and we&apos;ll confirm delivery there.
+          Payment: <span className="text-ink">{PAYMENT_METHOD}</span>. Next you&apos;ll review your order before
+          you place it.
         </p>
       </div>
 

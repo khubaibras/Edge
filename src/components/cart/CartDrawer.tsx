@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, MessageCircle, Minus, Plus, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Minus, Plus, X } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ProductArt } from "@/components/art/ProductArt";
@@ -26,7 +26,7 @@ const TITLES: Record<Step, string> = {
   bag: "Cart",
   details: "Delivery details",
   review: "Review order",
-  sent: "Order sent",
+  sent: "Order placed",
 };
 
 export function CartDrawer() {
@@ -261,8 +261,8 @@ function Review({ order, onEdit, onSend }: { order: Order; onEdit: () => void; o
     <>
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-8">
         <p className="max-w-[40ch] text-[14px] leading-relaxed text-ink-2">
-          Your order is ready as a WhatsApp message. Send it to us and we&apos;ll reply to confirm delivery.{" "}
-          {PAYMENT_METHOD}.
+          Check your order, then place it. It opens in a chat with us, ready to send, and we&apos;ll reply to confirm
+          delivery. {PAYMENT_METHOD}.
         </p>
         <div className="mt-6 rounded-[4px] bg-paper-2 p-5 text-[13px] leading-[1.6] text-ink-2 [overflow-wrap:anywhere]">
           {order.message.split("\n").map((line, i) => (
@@ -286,8 +286,7 @@ function Review({ order, onEdit, onSend }: { order: Order; onEdit: () => void; o
           onClick={onSend}
           className={buttonClass("brand", "flex-1 sm:max-w-[260px]")}
         >
-          <MessageCircle size={16} strokeWidth={2} aria-hidden />
-          Send on WhatsApp
+          Place order
         </a>
       </div>
     </>
@@ -317,7 +316,7 @@ function Sent({ order, onDone }: { order: Order; onDone: () => void }) {
         </p>
         <h3 className="mt-3 font-display text-[40px] leading-[1.05] font-bold tracking-[-0.02em]">Thank you.</h3>
         <p className="mt-4 max-w-[36ch] text-[14px] leading-relaxed text-mute">
-          We&apos;ll reply on WhatsApp to confirm your order and delivery time. Payment is cash on delivery.
+          We&apos;ll reply to confirm your order and delivery time. Payment is cash on delivery.
         </p>
         <a
           href={whatsappLink(order.message)}
@@ -325,7 +324,7 @@ function Sent({ order, onDone }: { order: Order; onDone: () => void }) {
           rel="noopener noreferrer"
           className="mt-8 inline-block text-[13px] text-ink-2 underline underline-offset-4 transition-colors hover:text-ink"
         >
-          WhatsApp didn&apos;t open? Send the order again
+          Chat didn&apos;t open? Place the order again
         </a>
       </div>
       <div className="shrink-0 border-t border-line p-6">

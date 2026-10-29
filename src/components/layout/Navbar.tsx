@@ -265,7 +265,7 @@ export function Navbar({ variant = "home" }: { variant?: NavVariant }) {
                 )}
                 <a href={CHAT_LINK} target="_blank" rel="noopener noreferrer" className={buttonClass("brand", "w-full")}>
                   <MessageCircle aria-hidden className="size-4" strokeWidth={2} />
-                  Chat on WhatsApp
+                  Contact us
                 </a>
               </div>
             </div>

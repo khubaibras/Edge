@@ -36,8 +36,8 @@ const REASONS: { title: string; body: string; caption: string; visual: Visual }[
   },
   {
     title: "Order in one message",
-    body: "Your cart goes to us as one WhatsApp message. No account and no sign-up. We reply to confirm your order and when it will arrive.",
-    caption: "Ordered on WhatsApp",
+    body: "Your cart comes to us as one message. No account and no sign-up. We reply to confirm your order and when it will arrive.",
+    caption: "Ordered in one message",
     visual: "whatsapp",
   },
   {

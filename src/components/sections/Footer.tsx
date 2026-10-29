@@ -4,7 +4,7 @@ import { ArrowRight, MessageCircle, Plus } from "lucide-react";
 import Link from "next/link";
 import { buttonClass, Reveal } from "@/components/ui/primitives";
 import { FREE_SHIPPING_FROM, SHIPPING_FEE, formatPrice } from "@/lib/cart";
-import { CHAT_LINK, PHONE_DISPLAY } from "@/lib/contact";
+import { CHAT_LINK } from "@/lib/contact";
 import { PRODUCTS } from "@/lib/products";
 import { PAYMENT_METHOD } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
 const STEPS = [
   { title: "Add to cart", body: `Pick what you like in the shop. Free delivery from ${formatPrice(FREE_SHIPPING_FROM)}.` },
   { title: "Add your details", body: "Name, mobile number, city and address." },
-  { title: "Send it on WhatsApp", body: "Your order opens as a WhatsApp message. Press send." },
-  { title: "Pay on delivery", body: "We confirm on WhatsApp. Pay cash when it arrives." },
+  { title: "Check out", body: "Review your order and place it. We reply to confirm." },
+  { title: "Pay on delivery", body: "Pay cash when your order arrives." },
 ];
 
 /** "A, B, C and D" */
@@ -27,7 +27,7 @@ const KETTLES = namesWhere((p) => p.category === "kettles");
 const FAQS = [
   {
     q: "Where do you deliver?",
-    a: "Anywhere in Pakistan. We confirm the delivery time for your city on WhatsApp when we reply to your order.",
+    a: "Anywhere in Pakistan. We confirm the delivery time for your city when we reply to your order.",
   },
   {
     q: "How much is delivery?",
@@ -39,7 +39,7 @@ const FAQS = [
   },
   {
     q: "How long does delivery take?",
-    a: "It depends on your city. We confirm the delivery time on WhatsApp when we reply to your order.",
+    a: "It depends on your city. We confirm the delivery time when we reply to your order.",
   },
   {
     q: "Is your crockery really all glass?",
@@ -170,7 +170,7 @@ export function About() {
   );
 }
 
-/** Closing band after the questions: one push to the shop, one to WhatsApp. */
+/** Closing band after the questions: one push to the shop, one to contact us. */
 export function OrderCta() {
   return (
     <section
@@ -196,7 +196,7 @@ export function OrderCta() {
             </span>
           </h2>
           <p className="mt-6 max-w-[46ch] text-[16px] leading-relaxed text-white/85">
-            Cash on delivery to every city in Pakistan. We confirm your order on WhatsApp before we send it, and
+            Cash on delivery to every city in Pakistan. We confirm your order before we send it, and
             delivery is free from {formatPrice(FREE_SHIPPING_FROM)}.
           </p>
         </Reveal>
@@ -205,9 +205,9 @@ export function OrderCta() {
             Shop the range
             <ArrowRight aria-hidden className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={2} />
           </Link>
-          <a href={CHAT_LINK} target="_blank" rel="noopener noreferrer" className={buttonClass("outline-inverse", "tabular-nums")}>
+          <a href={CHAT_LINK} target="_blank" rel="noopener noreferrer" className={buttonClass("outline-inverse")}>
             <MessageCircle aria-hidden className="size-4" strokeWidth={2} />
-            WhatsApp {PHONE_DISPLAY}
+            Contact us
           </a>
         </Reveal>
       </div>
@@ -233,14 +233,10 @@ export function Footer({ className }: { className?: string }) {
             ))}
           </ul>
         </nav>
-        <div className="flex flex-col gap-1 text-[14px] sm:flex-row sm:items-center sm:gap-8">
-          <a
-            href={CHAT_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium tabular-nums underline-offset-4 hover:underline"
-          >
-            WhatsApp {PHONE_DISPLAY}
+        <div className="flex flex-col items-start gap-4 text-[14px] sm:flex-row sm:items-center sm:gap-8">
+          <a href={CHAT_LINK} target="_blank" rel="noopener noreferrer" className={buttonClass("secondary", "h-10 px-5")}>
+            <MessageCircle aria-hidden className="size-4" strokeWidth={2} />
+            Contact us
           </a>
           <p className="text-mute">© 2026 KROMA</p>
         </div>
