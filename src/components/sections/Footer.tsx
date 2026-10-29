@@ -120,10 +120,7 @@ export function About() {
               <p className="font-mono text-[11px] leading-4 font-medium tracking-[0.06em] text-white/85 uppercase">
                 WhatsApp · orders and questions
               </p>
-              <p className="mt-5 font-display text-[clamp(1.875rem,3.2vw,2.75rem)] leading-none font-bold tracking-[-0.02em] whitespace-nowrap tabular-nums">
-                {PHONE_DISPLAY}
-              </p>
-              <p className="mt-3 max-w-[34ch] text-[15px] leading-relaxed text-white/85">
+              <p className="mt-5 max-w-[34ch] text-[15px] leading-relaxed text-white/85">
                 Message us about a product, an order, or delivery to your city.
               </p>
               <a

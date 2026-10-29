@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Collections } from "@/components/sections/Collections";
-import { Craft } from "@/components/sections/Craft";
+// Inside section is switched off for now; uncomment here and below to bring it back.
+// import { Craft } from "@/components/sections/Craft";
 import { About, Footer, OrderCta } from "@/components/sections/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { TopSelling } from "@/components/sections/TopSelling";
@@ -16,7 +17,7 @@ export default function Home() {
         <WhyUs />
         <TopSelling />
         <Collections />
-        <Craft />
+        {/* <Craft /> */}
         <About />
         <OrderCta />
       </main>
