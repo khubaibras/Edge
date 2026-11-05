@@ -22,7 +22,7 @@ export function orderMessage(
 ) {
   const clean = (s: string) => s.replace(/\s+/g, " ").trim();
   return [
-    "Hello KROMA, I'd like to place an order.",
+    "Hello EDGE GLASSWARE, I'd like to place an order.",
     "",
     `*Order ${o.number}*`,
     ...lines.map(

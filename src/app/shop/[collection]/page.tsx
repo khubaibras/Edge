@@ -19,7 +19,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps<"/shop/[collection]">): Promise<Metadata> {
   const c = COLLECTION_BY_SLUG.get((await params).collection);
-  return c ? { title: `${c.label} — KROMA`, description: c.description } : {};
+  return c ? { title: `${c.label} — EDGE GLASSWARE`, description: c.description } : {};
 }
 
 /** One collection's own page. The frame renders straight away; the part that depends on the URL streams in. */

@@ -95,9 +95,9 @@ export function Navbar({ variant = "home" }: { variant?: NavVariant }) {
           href={variant === "home" ? "#top" : "/"}
           onClick={close}
           className="justify-self-start leading-none"
-          aria-label={variant === "home" ? "KROMA, back to top" : "KROMA home"}
+          aria-label={variant === "home" ? "EDGE GLASSWARE, back to top" : "EDGE GLASSWARE home"}
         >
-          <span className="display block text-[23px] tracking-[-0.01em]">KROMA</span>
+          <span className="display block text-[23px] tracking-[-0.01em]">EDGE GLASSWARE</span>
           <span className="mt-1 block font-mono text-[9.5px] tracking-[0.06em] whitespace-nowrap uppercase opacity-80">
             Tableware · Kettles · Flasks
           </span>

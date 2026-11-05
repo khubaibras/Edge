@@ -5,7 +5,7 @@ import { Reveal, SectionHeader } from "@/components/ui/primitives";
 import { WholesaleForm, WholesaleInfo } from "@/components/wholesale/WholesaleForm";
 
 export const metadata: Metadata = {
-  title: "Wholesale — KROMA",
+  title: "Wholesale — EDGE GLASSWARE",
   description:
     "Bulk orders of glass tableware, kettles, flasks and bottles for shops, cafés, hotels and offices. Send a query and we reply with prices.",
 };

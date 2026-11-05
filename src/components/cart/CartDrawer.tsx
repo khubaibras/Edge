@@ -57,7 +57,7 @@ export function CartDrawer() {
 
   // Build the WhatsApp message from the validated form; the cart is cleared only once it is sent.
   const reviewOrder = () => {
-    const number = `KR-${Math.floor(100000 + Math.random() * 900000)}`;
+    const number = `EG-${Math.floor(100000 + Math.random() * 900000)}`;
     const details = { ...form, number, phone: normalizePhone(form.phone) ?? form.phone };
     setOrder({ number, total, message: orderMessage(details, lines, { subtotal, shipping, total }) });
     setStep("review");

@@ -4,7 +4,7 @@ import { Footer, OrderSteps } from "@/components/sections/Footer";
 import { ShopHero } from "@/components/shop/ShopHero";
 
 export const metadata: Metadata = {
-  title: "Shop — KROMA",
+  title: "Shop — EDGE GLASSWARE",
   description:
     "Tea, drink and dinner wares in glass, kettles, flasks and bottles. Pick a collection, add to cart and check out.",
 };

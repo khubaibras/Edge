@@ -59,7 +59,7 @@ const SAMPLE: CartLine[] = [
   return product ? [{ product, qty: qty as number }] : [];
 });
 const SAMPLE_TOTALS = cartTotals(SAMPLE);
-const SAMPLE_NUMBER = "KR-385832";
+const SAMPLE_NUMBER = "EG-385832";
 
 export function WhyUs() {
   const ref = useRef<HTMLElement>(null);
@@ -105,7 +105,7 @@ export function WhyUs() {
 
           <div
             role="tablist"
-            aria-label="Reasons to order from KROMA"
+            aria-label="Reasons to order from EDGE GLASSWARE"
             className="mt-8 flex gap-2"
             onKeyDown={(e) => {
               if (e.key === "ArrowRight") pick(index + 1, true);
@@ -178,7 +178,7 @@ export function WhyUs() {
               aria-hidden
               className="display pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[30cqi] whitespace-nowrap text-white/[0.07] select-none"
             >
-              KROMA
+              EDGE
             </p>
             <AnimatePresence mode="popLayout" initial={false}>
               <motion.div
@@ -263,7 +263,7 @@ function Receipt() {
         transition={{ duration: 0.7, ease: EASE }}
         className="relative w-[min(62%,20rem)] bg-paper px-5 pt-5 pb-14 font-mono text-[11px] leading-[1.7] text-ink-2 shadow-lift"
       >
-        <p className="display text-[22px] text-ink">KROMA</p>
+        <p className="display text-[22px] text-ink">EDGE GLASSWARE</p>
         <p className="mt-1 uppercase">Delivery slip · {SAMPLE_NUMBER}</p>
         <div className="my-3 border-t border-dashed border-line-2" />
         {SAMPLE.map((l) => (

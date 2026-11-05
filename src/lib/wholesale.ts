@@ -30,7 +30,7 @@ export function wholesaleMessage(f: WholesaleValues, collections: string[]) {
   const clean = (s: string) => s.replace(/\s+/g, " ").trim();
   const optional = (label: string, value: string) => (clean(value) ? [`${label}: ${clean(value)}`] : []);
   return [
-    "Hello KROMA, I have a wholesale query.",
+    "Hello EDGE GLASSWARE, I have a wholesale query.",
     "",
     "*Wholesale query*",
     `Name: ${clean(f.name)}`,

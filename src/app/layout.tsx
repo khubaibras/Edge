@@ -15,7 +15,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "KROMA — Steel Flasks & Glass Tableware in Pakistan",
+  title: "EDGE GLASSWARE — Steel Flasks & Glass Tableware in Pakistan",
   description:
     "Insulated steel flasks and bottles, drinking glasses and glass crockery. Order online, pay cash on delivery across Pakistan.",
 };

@@ -35,7 +35,7 @@ async function find(params: PageProps<"/shop/[collection]/[product]">["params"])
 
 export async function generateMetadata({ params }: PageProps<"/shop/[collection]/[product]">): Promise<Metadata> {
   const found = await find(params);
-  return found ? { title: `${found.p.name} — KROMA`, description: found.p.description } : {};
+  return found ? { title: `${found.p.name} — EDGE GLASSWARE`, description: found.p.description } : {};
 }
 
 /** A product's own page. The frame renders straight away; the part that depends on the URL streams in. */

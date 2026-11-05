@@ -107,11 +107,11 @@ export function About() {
             <h2 id="about-title">
               <span className="display block text-[clamp(3rem,6.4vw,6rem)]">About</span>
               <span className="mt-2 block font-serif text-[clamp(1.375rem,2.2vw,2rem)] leading-[1.15] tracking-[-0.01em] text-ink-2 italic">
-                KROMA, and how ordering works
+                EDGE GLASSWARE, and how ordering works
               </span>
             </h2>
             <p className="mt-8 max-w-[38rem] text-[clamp(1.0625rem,1.4vw,1.25rem)] leading-[1.6] text-ink">
-              KROMA sells tea, drink and dinner wares in glass, stovetop kettles, and insulated steel flasks and
+              EDGE GLASSWARE sells tea, drink and dinner wares in glass, stovetop kettles, and insulated steel flasks and
               bottles.
             </p>
           </Reveal>
@@ -185,7 +185,7 @@ export function OrderCta() {
         aria-hidden
         className="display pointer-events-none absolute -bottom-[0.18em] left-1/2 -z-10 -translate-x-1/2 text-[24vw] leading-none whitespace-nowrap text-white/[0.06] select-none"
       >
-        KROMA
+        EDGE
       </p>
       <div className="shell grid gap-10 py-20 sm:py-24 lg:grid-cols-12 lg:items-center lg:py-28">
         <Reveal className="lg:col-span-7">
@@ -219,8 +219,8 @@ export function Footer({ className }: { className?: string }) {
   return (
     <footer className={cn("border-t border-line", className)}>
       <div className="shell flex flex-col gap-8 py-10 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
-        <Link href="/" aria-label="KROMA home" className="display text-[34px] leading-none">
-          KROMA
+        <Link href="/" aria-label="EDGE GLASSWARE home" className="display text-[34px] leading-none">
+          EDGE GLASSWARE
         </Link>
         <nav aria-label="Footer">
           <ul className="flex flex-wrap gap-x-6 gap-y-2 text-[14px] text-ink-2">
@@ -238,7 +238,7 @@ export function Footer({ className }: { className?: string }) {
             <MessageCircle aria-hidden className="size-4" strokeWidth={2} />
             Contact us
           </a>
-          <p className="text-mute">© 2026 KROMA</p>
+          <p className="text-mute">© 2026 EDGE GLASSWARE</p>
         </div>
       </div>
     </footer>

@@ -1,10 +1,10 @@
-# KROMA: store for glass tableware, kettles and flasks
+# EDGE GLASSWARE: store for glass tableware, kettles and flasks
 
 > **Status (27 Oct 2026):** not launched yet: a brand home page, a shop with one page per collection and one page per product, and a wholesale page. The production build, typecheck, lint and all 11 unit tests pass. The brand name, product catalog, prices and delivery terms are placeholders. See [Before launch](#before-launch).
 
 ## What it is
 
-KROMA is an online shop for the Pakistani market. It sells five collections, in the client's order:
+EDGE GLASSWARE is an online shop for the Pakistani market. It sells five collections, in the client's order:
 
 - **Tea Wares:** glass tea cups and saucers, a glass mug, a glass teapot with a steel infuser, and a tea set.
 - **Drink Wares:** tumblers, double-wall glasses, a carafe, coupe glasses and a water set.
@@ -33,9 +33,9 @@ The cart lives in React context in the root layout, so it carries over when movi
 Example of the generated message:
 
 ```
-Hello KROMA, I'd like to place an order.
+Hello EDGE GLASSWARE, I'd like to place an order.
 
-*Order KR-385832*
+*Order EG-385832*
 1. Thermal Flask (750 ml · Brushed steel) × 1 — Rs 4,500
 2. Commuter Bottle (420 ml · Terracotta) × 2 — Rs 6,400
 
@@ -52,7 +52,7 @@ Address: Flat 3B, Block 7, Clifton
 Notes: Call before coming
 ```
 
-The site itself stores and sends nothing. An order exists only once the customer sends that WhatsApp message. Order numbers are random (`KR-` plus 6 digits) and are not tracked anywhere.
+The site itself stores and sends nothing. An order exists only once the customer sends that WhatsApp message. Order numbers are random (`EG-` plus 6 digits) and are not tracked anywhere.
 
 ## Home page, top to bottom
 
@@ -167,7 +167,7 @@ Fonts are downloaded from Google Fonts by `next/font` at build time, so the buil
 - [ ] Confirm the delivery terms: Rs 250 fee, free from Rs 5,000, coverage "anywhere in Pakistan", cash on delivery (`src/lib/cart.ts`, `src/lib/whatsapp.ts`).
 - [ ] Replace the sample catalog: product names, prices, specs and colours in `src/lib/products.ts` are placeholders, including the new kettles, teapot and sets.
 - [ ] Confirm which products are really top sellers (`TOP_SELLING`).
-- [ ] Replace the placeholder brand name "KROMA". Search the code for it: wordmark, metadata, WhatsApp greeting, hero watermark, the name etched on the drawings, and the favicon in `src/app/icon.svg`.
+- [x] Brand name is now "EDGE GLASSWARE" (5 Nov 2026). The full name is used in the wordmark, metadata and WhatsApp greetings; the big background watermarks and the name etched on the drawings use "EDGE" so they fit. Order numbers start with `EG-`. The favicon (`src/app/icon.svg`) is an "E".
 - [ ] Test **Send on WhatsApp** on real Android and iPhone devices and in Safari. So far only the generated link has been checked.
 - [ ] Decide whether the cart should survive a page refresh (it is kept in memory only).
 - [ ] Decide whether orders need recording anywhere besides WhatsApp; there is no order database.

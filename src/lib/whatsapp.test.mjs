@@ -5,7 +5,7 @@ import { orderMessage, whatsappLink, WHATSAPP_NUMBER } from "./whatsapp.ts";
 const flask = { name: "Thermal Flask", subtitle: "750 ml · Brushed steel", price: 4500 };
 const mug = { name: "Glass Mug", subtitle: "350 ml · Borosilicate", price: 1450 };
 const details = {
-  number: "KR-123456",
+  number: "EG-123456",
   name: "  Ayesha   Khan ",
   phone: "+923001234567",
   city: "Lahore",
@@ -19,7 +19,7 @@ test("message lists items, totals, payment and delivery details", () => {
     shipping: 0,
     total: 7400,
   });
-  assert.match(msg, /\*Order KR-123456\*/);
+  assert.match(msg, /\*Order EG-123456\*/);
   assert.match(msg, /1\. Thermal Flask \(750 ml · Brushed steel\) × 1 — Rs 4,500/);
   assert.match(msg, /2\. Glass Mug \(350 ml · Borosilicate\) × 2 — Rs 2,900/);
   assert.match(msg, /Delivery: Free/);

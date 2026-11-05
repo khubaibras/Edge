@@ -182,7 +182,7 @@ function Wordmark({ cx, y, tone }: { cx: number; y: number; tone: Tone }) {
       opacity={tone === "steel" ? 0.6 : 0.55}
       style={{ fontFamily: "var(--font-inter), ui-sans-serif, sans-serif" }}
     >
-      KROMA
+      EDGE
     </text>
   );
 }

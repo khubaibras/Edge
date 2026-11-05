@@ -181,7 +181,7 @@ export function Hero() {
       className="relative isolate overflow-hidden bg-brand text-white [&_:focus-visible]:outline-white"
     >
       <h1 className="sr-only">
-        KROMA: glass tea, drink and dinner wares, kettles, flasks and bottles, delivered across Pakistan
+        EDGE GLASSWARE: glass tea, drink and dinner wares, kettles, flasks and bottles, delivered across Pakistan
       </h1>
 
       {/* Brand watermark: the one decorative layer, drifting against the pointer. */}
@@ -190,7 +190,7 @@ export function Hero() {
         style={{ x: markX, y: markY }}
         className="display pointer-events-none absolute top-[44%] left-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 text-[36vw] leading-none whitespace-nowrap text-white/[0.07] select-none lg:top-1/2 lg:text-[31vw]"
       >
-        KROMA
+        EDGE
       </motion.p>
 
       <div className="shell flex min-h-[calc(100svh-4rem)] flex-col pt-6 pb-6 lg:min-h-[max(38rem,calc(100svh-4rem))] lg:pb-7">
@@ -408,7 +408,7 @@ function ChatBadge({ className }: { className?: string }) {
       href={CHAT_LINK}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Contact KROMA"
+      aria-label="Contact EDGE GLASSWARE"
       className={cn("group relative size-[112px] place-items-center", className)}
     >
       <svg viewBox="0 0 100 100" aria-hidden className="absolute inset-0 size-full motion-safe:animate-spin-slow">
