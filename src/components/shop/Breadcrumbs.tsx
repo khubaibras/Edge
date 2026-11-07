@@ -1,7 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
-/** Where you are in the shop: Shop › Kettles › Colour Kettle. The last step is the current page. */
+/** Where you are in the shop: Shop › Tea Wares › Glass Mug. The last step is the current page. */
 export function Breadcrumbs({ trail }: { trail: { label: string; href?: string }[] }) {
   return (
     <nav aria-label="Breadcrumb">

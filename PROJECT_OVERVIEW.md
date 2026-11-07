@@ -1,23 +1,21 @@
-# EDGE GLASSWARE: store for glass tableware, kettles and flasks
+# EDGE GLASSWARE: store for glass tableware
 
 > **Status (27 Oct 2026):** not launched yet: a brand home page, a shop with one page per collection and one page per product, and a wholesale page. The production build, typecheck, lint and all 11 unit tests pass. The brand name, product catalog, prices and delivery terms are placeholders. See [Before launch](#before-launch).
 
 ## What it is
 
-EDGE GLASSWARE is an online shop for the Pakistani market. It sells five collections, in the client's order:
+EDGE GLASSWARE is an online shop for the Pakistani market. It sells three collections, in the client's order:
 
 - **Tea Wares:** glass tea cups and saucers, a glass mug, a glass teapot with a steel infuser, and a tea set.
 - **Drink Wares:** tumblers, double-wall glasses, a carafe, coupe glasses and a water set.
 - **Dinner Wares:** glass dinner plates, quarter plates, a serving bowl, dessert bowls and an 18-piece dinner set. All crockery is glass; there are no ceramics.
-- **Kettles:** a steel whistling kettle, a colour kettle (5 colours) and a pour-over kettle (2 finishes).
-- **Flasks & Bottles:** thermal flasks, a commuter bottle (5 colours) and a table jug.
 
 The site has no backend, no database and no online payment. A customer fills a cart on the order page, and checkout turns it into a ready-made WhatsApp message to the shop. The shop confirms the order on WhatsApp and the customer pays cash on delivery.
 
 ## The two pages
 
 - **Home (`/`)** is the brand page. It shows the collections and the reasons to buy, but has no add-to-cart buttons. Every product and collection link leads to the order page.
-- **Shop (`/shop`)** is where all ordering happens. `/shop` lists the five collections; each collection has its own page (`/shop/kettles`), and each product has its own page (`/shop/kettles/colour-kettle-sage`).
+- **Shop (`/shop`)** is where all ordering happens. `/shop` lists the three collections; each collection has its own page (`/shop/tea-wares`), and each product has its own page (`/shop/tea-wares/glass-mug`).
 
 The cart lives in React context in the root layout, so it carries over when moving between the two pages. Refreshing the page empties it.
 
@@ -36,12 +34,12 @@ Example of the generated message:
 Hello EDGE GLASSWARE, I'd like to place an order.
 
 *Order EG-385832*
-1. Thermal Flask (750 ml · Brushed steel) × 1 — Rs 4,500
-2. Commuter Bottle (420 ml · Terracotta) × 2 — Rs 6,400
+1. Glass Teapot (1.0 L · Steel infuser) × 1 — Rs 3,400
+2. Glass Mug (350 ml · Borosilicate) × 2 — Rs 2,900
 
-Subtotal: Rs 10,900
+Subtotal: Rs 6,300
 Delivery: Free
-*Total: Rs 10,900*
+*Total: Rs 6,300*
 Payment: Cash on delivery
 
 *Deliver to*
@@ -60,12 +58,12 @@ All paths are under `src/components/`.
 
 | Section | Anchor | What it does | Code |
 |---|---|---|---|
-| Nav | | The five collections (each opens that collection's page), a **Wholesale** link and a **Shop now** button. Once the cart has something in it, the button becomes **Cart**. On phones, a menu with the collections, page links and WhatsApp. | `layout/Navbar.tsx` |
-| Hero | `#top` | Cobalt poster, one slide per collection. Each shows a group of products (e.g. five bottles in different colours) between two big words that name the collection, and a **Shop {collection}** button. Arrows, dots, swipe or arrow keys; autoplay pauses on hover, keyboard focus, while the cart is open, and for reduced-motion users. | `sections/Hero.tsx` |
-| Why us | `#why` | Four numbered reasons (glass crockery, flask hours, ordering on WhatsApp, cash on delivery) with a picture for each. Steps through on its own while in view. | `sections/WhyUs.tsx` |
+| Nav | | The three collections (each opens that collection's page), a **Wholesale** link and a **Shop now** button. Once the cart has something in it, the button becomes **Cart**. On phones, a menu with the collections, page links and WhatsApp. | `layout/Navbar.tsx` |
+| Hero | `#top` | Cobalt poster, one slide per collection. Each shows a group of products (e.g. the teapot, cups and a mug) between two big words that name the collection, and a **Shop {collection}** button. Arrows, dots, swipe or arrow keys; autoplay pauses on hover, keyboard focus, while the cart is open, and for reduced-motion users. | `sections/Hero.tsx` |
+| Why us | `#why` | Four numbered reasons (glass crockery, sets for less, ordering on WhatsApp, cash on delivery) with a picture for each. Steps through on its own while in view. | `sections/WhyUs.tsx` |
 | Top selling | `#top-selling` | Endless row of products that moves on its own and stops while pointed at. Each card opens that product's page. | `sections/TopSelling.tsx` |
 | Our collections | `#collections` | One row per collection, image and text alternating sides, with **View collection**. | `sections/Collections.tsx` |
-| Inside | `#craft` | Switched off for now (commented out in `src/app/page.tsx`). The flask and the tumbler cut in half; tap a number to see what that part does. | `sections/Craft.tsx`, `craft/` |
+| Inside | `#craft` | Switched off for now (commented out in `src/app/page.tsx`). The tumbler cut in half; tap a number to see what that part does. | `sections/Craft.tsx`, `craft/` |
 | About | `#about`, `#how-to-order` | WhatsApp contact card, the four ordering steps and the questions (delivery answers are in the questions). | `sections/Footer.tsx` (`About`, `OrderSteps`) |
 | Order today | | Cobalt closing band: **Shop the range** and **Contact us**. | `sections/Footer.tsx` (`OrderCta`) |
 | Footer | | Wordmark, page links and a **Contact us** button. No phone number is shown anywhere. | `sections/Footer.tsx` (`Footer`) |
@@ -94,7 +92,7 @@ Collection slugs are in `COLLECTIONS`; links are built with `collectionHref` and
 | "Chat with us" link text, displayed phone number | `src/lib/contact.ts` (built from `WHATSAPP_NUMBER`) |
 | Delivery fee, free-delivery threshold, max quantity, price format | `src/lib/cart.ts`: `SHIPPING_FEE`, `FREE_SHIPPING_FROM`, `MAX_QTY`, `formatPrice` |
 | Collections: names, order, taglines, descriptions, URL slugs | `COLLECTIONS` in `src/lib/products.ts` |
-| Products: names, prices, descriptions, specs, collection, colours | `PRODUCTS` in `src/lib/products.ts` (prices are whole rupees). Colour options are built with `colourways(...)`: one product per colour sharing a `family`. |
+| Products: names, prices, descriptions, specs, collection, colours | `PRODUCTS` in `src/lib/products.ts` (prices are whole rupees). Colour options are one product per colour, sharing a `family` and each with its own `color`. |
 | Top selling list | `TOP_SELLING` in `src/lib/products.ts` |
 | Hero slides: words per collection | `SLIDES` in `src/components/sections/Hero.tsx` |
 | Why us reasons | `REASONS` in `src/components/sections/WhyUs.tsx` |
@@ -110,10 +108,10 @@ Prices, fees and the phone number each live in one constant. Changing one update
 
 There are no photos. Each product is drawn in code as an SVG "studio render" in `src/components/art/`:
 
-- `metal.tsx`: flask, bottle, table jug, and the kettles (a tapered kettle on a black base, with a V lip or a gooseneck spout).
+- `draw.tsx`: drawing helpers shared by the glass renders (gradients, cylinder paths, brushed-steel stops).
 - `glass.tsx`: tumbler, double-wall glass, carafe, coupe, plate, quarter plates, standing plate, bowl, tea cup, teapot, mug.
-- `sets.tsx`: products made of several pieces (tea set, water set, dinner set, dessert bowls) and the five collection group pictures (`ENSEMBLES`). Each group has a measured frame (`box`) so every group fills its space alike.
-- `shared.tsx`: finishes (`TONES`, including the coloured coats cobalt, sage, terracotta and sand), swatch colours and shadows.
+- `sets.tsx`: products made of several pieces (tea set, water set, dinner set, dessert bowls) and the three collection group pictures (`ENSEMBLES`). Each group has a measured frame (`box`) so every group fills its space alike.
+- `shared.tsx`: finishes (`TONES`: clear and smoke glass, and steel for the teapot infuser), swatch colours and shadows.
 - `ProductArt.tsx`: `ProductArt` draws one product; `GroupArt` draws a collection's group.
 - `Scene.tsx`: a group picture on a wall-and-table backdrop.
 
@@ -158,14 +156,15 @@ Fonts are downloaded from Google Fonts by `next/font` at build time, so the buil
 2. **Owner feedback:** glass-only crockery, a reference poster hero, rupee prices and WhatsApp checkout. The catalog moved to glass crockery and rupees, and checkout was rebuilt around WhatsApp and cash on delivery.
 3. **Design review loop:** a designer agent built the new direction; an evaluator agent checked it at desktop and mobile sizes and approved it in round 2.
 4. **Two pages (27 Oct 2026):** following the client's references (`test-samples/`):
-   - The catalog was regrouped into the client's five collections, with kettles, a teapot, sets and colour options added.
+   - The catalog was regrouped into the client's collections, with a teapot, sets and colour options added.
    - Home became a brand page: a cleaner hero with collection groups (no count, description, price or delivery pill), Why us, Top selling, Our collections (replacing Ideas), and an "Order today" band after the questions. Delivery details moved into the questions. "How to order" left the nav.
    - The shop and cart moved to the new order page (`/shop`), with its own hero and a shelf per collection. Checkout is unchanged.
+5. **Kettles, flasks and bottles removed (7 Nov 2026):** the Kettles and Flasks & Bottles collections, their products (including the table jug), their drawings and every mention of them in the copy were taken out. The store now sells three glass collections.
 
 ## Before launch
 
 - [ ] Confirm the delivery terms: Rs 250 fee, free from Rs 5,000, coverage "anywhere in Pakistan", cash on delivery (`src/lib/cart.ts`, `src/lib/whatsapp.ts`).
-- [ ] Replace the sample catalog: product names, prices, specs and colours in `src/lib/products.ts` are placeholders, including the new kettles, teapot and sets.
+- [ ] Replace the sample catalog: product names, prices, specs and colours in `src/lib/products.ts` are placeholders, including the new teapot and sets.
 - [ ] Confirm which products are really top sellers (`TOP_SELLING`).
 - [x] Brand name is now "EDGE GLASSWARE" (5 Nov 2026). The full name is used in the wordmark, metadata and WhatsApp greetings; the big background watermarks and the name etched on the drawings use "EDGE" so they fit. Order numbers start with `EG-`. The favicon (`src/app/icon.svg`) is an "E".
 - [ ] Test **Send on WhatsApp** on real Android and iPhone devices and in Safari. So far only the generated link has been checked.

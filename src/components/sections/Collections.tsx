@@ -14,7 +14,7 @@ export function Collections() {
         <SectionHeader
           id="collections-title"
           title="Our Collections"
-          italic="five ranges for the kitchen and the table"
+          italic="three ranges for the table"
           aside="Each collection opens in the shop, where you can pick colours, add to your cart and order."
         />
 

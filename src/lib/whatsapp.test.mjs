@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { orderMessage, whatsappLink, WHATSAPP_NUMBER } from "./whatsapp.ts";
 
-const flask = { name: "Thermal Flask", subtitle: "750 ml · Brushed steel", price: 4500 };
+const teapot = { name: "Glass Teapot", subtitle: "750 ml · Borosilicate", price: 4500 };
 const mug = { name: "Glass Mug", subtitle: "350 ml · Borosilicate", price: 1450 };
 const details = {
   number: "EG-123456",
@@ -14,13 +14,13 @@ const details = {
 };
 
 test("message lists items, totals, payment and delivery details", () => {
-  const msg = orderMessage(details, [{ product: flask, qty: 1 }, { product: mug, qty: 2 }], {
+  const msg = orderMessage(details, [{ product: teapot, qty: 1 }, { product: mug, qty: 2 }], {
     subtotal: 7400,
     shipping: 0,
     total: 7400,
   });
   assert.match(msg, /\*Order EG-123456\*/);
-  assert.match(msg, /1\. Thermal Flask \(750 ml · Brushed steel\) × 1 — Rs 4,500/);
+  assert.match(msg, /1\. Glass Teapot \(750 ml · Borosilicate\) × 1 — Rs 4,500/);
   assert.match(msg, /2\. Glass Mug \(350 ml · Borosilicate\) × 2 — Rs 2,900/);
   assert.match(msg, /Delivery: Free/);
   assert.match(msg, /\*Total: Rs 7,400\*/);

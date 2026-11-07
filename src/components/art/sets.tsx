@@ -1,6 +1,6 @@
 import type { ArtKind, ArtView, Category, Tone } from "@/lib/types";
 import { GLASS_ART } from "./glass";
-import { METAL_ART, r2 } from "./metal";
+import { r2 } from "./draw";
 import { GROUND_Y, type ArtMap, type ArtRenderer } from "./shared";
 
 /** One render placed in a group: centred on `x`, standing on ground line `g`, scaled by `s`. */
@@ -13,7 +13,7 @@ export interface Piece {
   s?: number;
 }
 
-const SINGLES: ArtMap = { ...METAL_ART, ...GLASS_ART };
+const SINGLES: ArtMap = GLASS_ART;
 
 /** Draws pieces in array order, so list the back row first. */
 export function Pieces({ pieces, uid }: { pieces: Piece[]; uid: string }) {
@@ -132,26 +132,6 @@ export const ENSEMBLES: Record<Category, Ensemble> = {
       { kind: "plate", tone: G, view: "alt", x: 284, g: 482, s: 0.84 },
       { kind: "bowl", tone: G, x: 120, g: 474, s: 0.6 },
       { kind: "bowl", tone: G, x: 448, g: 488, s: 0.42 },
-    ],
-  },
-  kettles: {
-    box: [55, 195, 530, 315],
-    pieces: [
-      { kind: "kettle", tone: "sage", view: "alt", x: 236, g: 360, s: 0.5 },
-      { kind: "kettle", tone: "obsidian", x: 404, g: 362, s: 0.5 },
-      { kind: "kettle", tone: "stone", view: "alt", x: 150, g: 470, s: 0.6 },
-      { kind: "kettle", tone: "steel", x: 490, g: 472, s: 0.6 },
-      { kind: "kettle", tone: "terracotta", x: 320, g: 500, s: 0.7 },
-    ],
-  },
-  flasks: {
-    box: [162, 97, 318, 397],
-    pieces: [
-      { kind: "bottle", tone: "sand", x: 206, g: 414, s: 0.84 },
-      { kind: "flask", tone: "steel", x: 320, g: 400, s: 0.86 },
-      { kind: "bottle", tone: "sage", x: 436, g: 414, s: 0.84 },
-      { kind: "bottle", tone: "terracotta", x: 266, g: 474, s: 0.92 },
-      { kind: "bottle", tone: "stone", x: 380, g: 478, s: 0.92 },
     ],
   },
 };

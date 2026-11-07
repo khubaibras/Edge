@@ -6,10 +6,10 @@ import { ShopHero } from "@/components/shop/ShopHero";
 export const metadata: Metadata = {
   title: "Shop — EDGE GLASSWARE",
   description:
-    "Tea, drink and dinner wares in glass, kettles, flasks and bottles. Pick a collection, add to cart and check out.",
+    "Tea, drink and dinner wares in glass. Pick a collection, add to cart and check out.",
 };
 
-/** Shop landing: the five collections, each opening its own page. */
+/** Shop landing: the three collections, each opening its own page. */
 export default function ShopPage() {
   return (
     <>

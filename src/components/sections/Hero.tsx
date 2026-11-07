@@ -42,8 +42,6 @@ const SLIDES: Slide[] = [
   slide("tea", ["Tea", "cups, saucers and teapots"], ["Wares", "in clear, heat-proof glass"]),
   slide("drink", ["Drink", "water, juice or lemonade"], ["Wares", "tumblers, carafes, coupes"]),
   slide("dinner", ["Dinner", "for the whole dawat"], ["Wares", "plates, bowls and full sets"]),
-  slide("kettles", ["Chai", "starts with a whistle"], ["Kettles", "in steel and five colours"]),
-  slide("flasks", ["Flasks", "chai hot for 12 hours"], ["Bottles", "in five colours"]),
 ];
 
 const SLIDE_MS = 6500;
@@ -181,7 +179,7 @@ export function Hero() {
       className="relative isolate overflow-hidden bg-brand text-white [&_:focus-visible]:outline-white"
     >
       <h1 className="sr-only">
-        EDGE GLASSWARE: glass tea, drink and dinner wares, kettles, flasks and bottles, delivered across Pakistan
+        EDGE GLASSWARE: glass tea, drink and dinner wares, delivered across Pakistan
       </h1>
 
       {/* Brand watermark: the one decorative layer, drifting against the pointer. */}

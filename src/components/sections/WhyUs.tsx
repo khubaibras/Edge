@@ -19,7 +19,7 @@ import type { CartLine } from "@/lib/types";
 import { PAYMENT_METHOD } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
-type Visual = "glass" | "flasks" | "whatsapp" | "cash";
+type Visual = "glass" | "sets" | "whatsapp" | "cash";
 
 const REASONS: { title: string; body: string; caption: string; visual: Visual }[] = [
   {
@@ -29,10 +29,10 @@ const REASONS: { title: string; body: string; caption: string; visual: Visual }[
     visual: "glass",
   },
   {
-    title: "Hot for 12, cold for 24",
-    body: "Our double-wall vacuum flasks keep chai hot for 12 hours and water cold for 24, and the outside never sweats.",
-    caption: "Double-wall vacuum steel",
-    visual: "flasks",
+    title: "Full sets for less",
+    body: "Our tea, water and dinner sets bring every piece together in one box, and cost less than buying the pieces one by one.",
+    caption: "Tea, water and dinner sets",
+    visual: "sets",
   },
   {
     title: "Order in one message",
@@ -52,7 +52,7 @@ const STEP_MS = 7000;
 
 // A sample order made of real products and prices, totalled the way the cart totals it.
 const SAMPLE: CartLine[] = [
-  ["thermal-flask-750", 1],
+  ["glass-teapot", 1],
   ["glass-mug", 2],
 ].flatMap(([id, qty]) => {
   const product = PRODUCT_BY_ID.get(id as string);
@@ -201,10 +201,10 @@ export function WhyUs() {
 }
 
 function ReasonVisual({ visual }: { visual: Visual }) {
-  if (visual === "glass" || visual === "flasks") {
+  if (visual === "glass" || visual === "sets") {
     return (
       <div className="absolute inset-x-[12%] top-[12%] bottom-[16%]">
-        <GroupArt collection={visual === "glass" ? "dinner" : "flasks"} />
+        <GroupArt collection={visual === "glass" ? "dinner" : "tea"} />
       </div>
     );
   }

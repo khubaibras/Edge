@@ -21,7 +21,6 @@ const list = (items: string[]) => (items.length > 1 ? `${items.slice(0, -1).join
 const namesWhere = (test: (p: (typeof PRODUCTS)[number]) => boolean) => [...new Set(PRODUCTS.filter(test).map((p) => p.name))];
 
 const MICROWAVE_SAFE = namesWhere((p) => p.highlights.some((h) => /microwave/i.test(h)));
-const KETTLES = namesWhere((p) => p.category === "kettles");
 
 // Delivery answers live here (they used to be a separate table), next to payment and care.
 const FAQS = [
@@ -49,14 +48,6 @@ const FAQS = [
     q: "Which pieces can go in the microwave?",
     a: `The ${list(MICROWAVE_SAFE)}. Every product's details show how to wash it.`,
   },
-  {
-    q: "Do the kettles work on induction?",
-    a: `Yes. The ${list(KETTLES)} all have thick bases for gas, electric and induction hobs.`,
-  },
-  {
-    q: "How long do the flasks keep drinks hot or cold?",
-    a: "Thermal Flask and Thermal Flask Compact: cold for 24 hours, hot for 12. Table Jug: hot for 12 hours, cold for 24. Commuter Bottle: cold for 18 hours, hot for 8.",
-  },
 ];
 
 const LINKS = [
@@ -64,7 +55,7 @@ const LINKS = [
   { label: "Why us", href: "/#why" },
   { label: "Top selling", href: "/#top-selling" },
   { label: "Collections", href: "/#collections" },
-  // { label: "Inside the flask", href: "/#craft" }, // Inside section is switched off for now.
+  // { label: "Inside the glass", href: "/#craft" }, // Inside section is switched off for now.
   { label: "Wholesale", href: "/wholesale" },
   { label: "Questions", href: "/#about" },
 ];
@@ -111,8 +102,7 @@ export function About() {
               </span>
             </h2>
             <p className="mt-8 max-w-[38rem] text-[clamp(1.0625rem,1.4vw,1.25rem)] leading-[1.6] text-ink">
-              EDGE GLASSWARE sells tea, drink and dinner wares in glass, stovetop kettles, and insulated steel flasks and
-              bottles.
+              EDGE GLASSWARE sells tea, drink and dinner wares in glass.
             </p>
           </Reveal>
 

@@ -7,7 +7,7 @@ import { WholesaleForm, WholesaleInfo } from "@/components/wholesale/WholesaleFo
 export const metadata: Metadata = {
   title: "Wholesale — EDGE GLASSWARE",
   description:
-    "Bulk orders of glass tableware, kettles, flasks and bottles for shops, cafés, hotels and offices. Send a query and we reply with prices.",
+    "Bulk orders of glass tableware for shops, cafés, hotels and offices. Send a query and we reply with prices.",
 };
 
 /** Wholesale page: a query form that goes to the shop as a chat message. */

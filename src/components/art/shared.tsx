@@ -13,13 +13,6 @@ export const GROUND_Y = 462;
 /** Base ramps per finish: hi = specular side, deep = core shadow. */
 export const TONES: Record<Tone, { hi: string; mid: string; lo: string; deep: string }> = {
   steel: { hi: "#f6f6f4", mid: "#cbcccb", lo: "#909392", deep: "#5d6060" },
-  obsidian: { hi: "#5c5a57", mid: "#2c2b2a", lo: "#1d1c1b", deep: "#0e0e0d" },
-  stone: { hi: "#f4f0e9", mid: "#ddd6cb", lo: "#bfb6a8", deep: "#968c7e" },
-  // Coloured coats for bottles and kettles, picked to sit beside steel and the cobalt brand.
-  cobalt: { hi: "#8193e4", mid: "#3e56cc", lo: "#2b3ea6", deep: "#19256c" },
-  sage: { hi: "#e3e9d8", mid: "#aebb9f", lo: "#839274", deep: "#59664d" },
-  terracotta: { hi: "#f4c6aa", mid: "#da8a63", lo: "#b46343", deep: "#7b3e28" },
-  sand: { hi: "#f7eed6", mid: "#e2cfa0", lo: "#c1a972", deep: "#8b774b" },
   clear: { hi: "#ffffff", mid: "#e6ebea", lo: "#c7d0ce", deep: "#97a3a1" },
   smoke: { hi: "#f0eeeb", mid: "#aaa49c", lo: "#7a746c", deep: "#4e4943" },
 };

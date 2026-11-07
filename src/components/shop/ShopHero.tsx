@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 const CYCLE_MS = 4200;
 const pad = (n: number) => String(n).padStart(2, "0");
 
-/** Shop opener: the five collections as panels that open up on hover; each opens its collection page. */
+/** Shop opener: the three collections as panels that open up on hover; each opens its collection page. */
 export function ShopHero() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();

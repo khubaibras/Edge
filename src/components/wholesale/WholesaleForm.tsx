@@ -243,7 +243,7 @@ export function WholesaleForm() {
           <ErrorSlot name="collections" error={errors.collections} />
         </fieldset>
 
-        {input("quantity", "Approximate quantity", { placeholder: "e.g. 200 tea cups, 50 flasks", maxLength: 120 }, true)}
+        {input("quantity", "Approximate quantity", { placeholder: "e.g. 200 tea cups, 50 dinner sets", maxLength: 120 }, true)}
 
         <div className="sm:col-span-2">
           <label htmlFor="wholesale-message" className="block text-[12px] text-ink-2">

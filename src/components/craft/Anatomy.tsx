@@ -10,7 +10,7 @@ import { EASE } from "@/lib/motion";
 import { PRODUCT_BY_ID, productHref } from "@/lib/products";
 import { cn } from "@/lib/utils";
 import { STUDIES } from "./data";
-import { FlaskSection, GlassSection, VIEW_H, VIEW_W } from "./drawings";
+import { GlassSection, VIEW_H, VIEW_W } from "./drawings";
 
 const STUDY_PRODUCTS = STUDIES.map((s) => {
   const p = PRODUCT_BY_ID.get(s.productId);
@@ -95,7 +95,7 @@ export function Anatomy({ className }: { className?: string }) {
                 className="absolute inset-0 size-full overflow-visible [&_:is(path,line)]:[vector-effect:non-scaling-stroke]"
                 aria-hidden
               >
-                {study.id === "thermal" ? <FlaskSection active={active.id} uid={uid} /> : <GlassSection active={active.id} uid={uid} />}
+                <GlassSection active={active.id} uid={uid} />
                 {study.features.map((f) => {
                   const [tx, ty] = f.target;
                   const [cx, cy] = f.callout;

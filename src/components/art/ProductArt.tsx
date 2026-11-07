@@ -2,11 +2,10 @@ import { useId } from "react";
 import { cn } from "@/lib/utils";
 import type { ArtKind, ArtView, Category, Tone } from "@/lib/types";
 import { GLASS_ART } from "./glass";
-import { METAL_ART } from "./metal";
 import { ENSEMBLES, Pieces, SET_ART } from "./sets";
 import { ContactShadow, GROUND_Y, TONES, type ArtMap, type ArtRenderer } from "./shared";
 
-const ART: ArtMap = { ...METAL_ART, ...GLASS_ART, ...SET_ART };
+const ART: ArtMap = { ...GLASS_ART, ...SET_ART };
 
 // Studio crop for tiles: [scale from the ground line, vertical shift in viewBox units] so short
 // pieces (plates, cups, tumblers) fill the frame like the tall ones instead of hugging the floor.
@@ -20,9 +19,6 @@ const FIT: Partial<Record<ArtKind, [number, number]>> = {
   tumbler: [1.2, -25],
   doublewall: [1.15, -20],
   coupe: [1.05, -5],
-  bottle: [1.1, 0],
-  kettle: [1.02, -6],
-  gooseneck: [1.02, -6],
   teapot: [1.2, -40],
   teaset: [1.08, -35],
   waterset: [1.05, -15],

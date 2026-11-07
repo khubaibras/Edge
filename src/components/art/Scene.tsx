@@ -8,8 +8,6 @@ export const SCENES: Record<Category, { wall: string; table: string; mark: strin
   tea: { wall: "bg-[#ece6dc]", table: "bg-[#ddd4c6]", mark: "text-ink/[0.06]", word: "Chai" },
   drink: { wall: "bg-ice", table: "bg-[#d2daf3]", mark: "text-brand/[0.1]", word: "Paani" },
   dinner: { wall: "bg-brand", table: "bg-brand-2", mark: "text-white/[0.12]", word: "Dawat" },
-  kettles: { wall: "bg-ink", table: "bg-[#24221f]", mark: "text-white/[0.07]", word: "Boil" },
-  flasks: { wall: "bg-[#e6eae0]", table: "bg-[#d6dccc]", mark: "text-ink/[0.06]", word: "Safar" },
 };
 
 /** A collection's group shot standing on a table, with an Urdu or plain word for the occasion behind it. */

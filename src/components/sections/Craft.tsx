@@ -8,7 +8,7 @@ export function Craft() {
         <SectionHeader
           id="craft-title"
           title="Inside"
-          italic="the flask and the glass, cut in half"
+          italic="the glass, cut in half"
           aside="Tap a number to see what each part does."
         />
         <Reveal className="mt-12 lg:mt-16">

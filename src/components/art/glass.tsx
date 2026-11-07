@@ -1,5 +1,5 @@
 import type { Tone } from "@/lib/types";
-import { brushed, frontArc, Grad, side } from "./metal";
+import { brushed, frontArc, Grad, side } from "./draw";
 import { ContactShadow, GROUND_Y, TONES, type ArtMap, type ArtRenderer } from "./shared";
 
 const INK = "#151413";

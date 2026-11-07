@@ -1,13 +1,8 @@
-/** The five collections the client sells under (see COLLECTIONS in lib/products). */
-export type Category = "tea" | "drink" | "dinner" | "kettles" | "flasks";
+/** The three collections the client sells under (see COLLECTIONS in lib/products). */
+export type Category = "tea" | "drink" | "dinner";
 
 /** Which studio render to draw (see components/art/ProductArt). */
 export type ArtKind =
-  | "flask"
-  | "bottle"
-  | "jug"
-  | "kettle"
-  | "gooseneck"
   | "tumbler"
   | "doublewall"
   | "carafe"
@@ -24,15 +19,9 @@ export type ArtKind =
   | "waterset"
   | "dinnerset";
 
-/** Surface finish of the render: steel and coloured coats for metal, glass tints for everything else. */
+/** Surface finish of the render: glass tints, plus steel for metal fittings like the teapot infuser. */
 export type Tone =
   | "steel"
-  | "obsidian"
-  | "stone"
-  | "cobalt"
-  | "sage"
-  | "terracotta"
-  | "sand"
   | "clear"
   | "smoke";
 

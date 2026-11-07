@@ -1,4 +1,4 @@
-import type { Category, Product, Spec, Tone } from "./types";
+import type { Category, Product } from "./types";
 
 export interface Collection {
   id: Category;
@@ -33,41 +33,9 @@ export const COLLECTIONS: Collection[] = [
     tagline: "plates, bowls and full dinner sets",
     description: "Tempered glass plates and bowls for everyday meals and dawats. Microwave and dishwasher safe.",
   },
-  {
-    id: "kettles",
-    slug: "kettles",
-    label: "Kettles",
-    tagline: "stovetop kettles in steel and colour",
-    description: "Whistling and pour-over kettles with thick bases that work on gas, electric and induction.",
-  },
-  {
-    id: "flasks",
-    slug: "flasks-bottles",
-    label: "Flasks & Bottles",
-    tagline: "insulated steel, hot or cold",
-    description: "Double-wall vacuum flasks, bottles and a table jug that keep chai hot and water cold for hours.",
-  },
 ];
 
 export const COLLECTION_BY_ID = new Map(COLLECTIONS.map((c) => [c.id, c]));
-
-/** One product per colour, all sharing a family id, so cart lines and order messages name the colour. */
-function colourways(
-  base: Omit<Product, "id" | "subtitle" | "tone" | "family" | "color">,
-  family: string,
-  size: string,
-  colours: { id: string; color: string; tone: Tone }[],
-): Product[] {
-  return colours.map((c) => ({ ...base, id: c.id, subtitle: `${size} · ${c.color}`, tone: c.tone, family, color: c.color }));
-}
-
-const KETTLE_SPECS = (capacity: string, height: string, weight: string, material: string): Spec[] => [
-  { label: "Capacity", value: capacity },
-  { label: "Height", value: height },
-  { label: "Weight", value: weight },
-  { label: "Material", value: material },
-  { label: "Hobs", value: "Gas, electric, induction" },
-];
 
 export const PRODUCTS: Product[] = [
   /* ---------------------------------------------------------------- Tea Wares */
@@ -115,7 +83,7 @@ export const PRODUCTS: Product[] = [
     kind: "teapot",
     tone: "clear",
     description:
-      "A round glass teapot with a removable steel infuser, so loose leaves stay out of the cup. Takes boiling water straight from the kettle.",
+      "A round glass teapot with a removable steel infuser, so loose leaves stay out of the cup. Takes boiling water straight from the boil.",
     highlights: ["Heat-resistant borosilicate glass", "Removable stainless steel infuser", "Steel lid stays put when you pour"],
     specs: [
       { label: "Capacity", value: "1.0 L" },
@@ -332,149 +300,6 @@ export const PRODUCTS: Product[] = [
     ],
   },
 
-  /* ---------------------------------------------------------------- Kettles */
-  {
-    id: "whistling-kettle",
-    name: "Whistling Kettle",
-    subtitle: "2.5 L · Brushed steel",
-    category: "kettles",
-    price: 5200,
-    kind: "kettle",
-    tone: "steel",
-    description:
-      "A stainless steel stovetop kettle that whistles when the water boils. The thick base heats evenly on gas, electric and induction.",
-    highlights: ["Whistles at the boil", "Thick base for gas, electric and induction", "Stay-cool handle and knob"],
-    specs: KETTLE_SPECS("2.5 L", "22 cm", "1.1 kg", "18/8 stainless steel"),
-  },
-  ...colourways(
-    {
-      name: "Colour Kettle",
-      category: "kettles",
-      price: 5800,
-      kind: "kettle",
-      description:
-        "The whistling kettle in a smaller size with a glossy enamel coat, in five colours. Same thick base for gas, electric and induction.",
-      highlights: ["Whistles at the boil", "Glossy enamel coat over steel", "Thick base for gas, electric and induction"],
-      specs: KETTLE_SPECS("2.0 L", "20 cm", "1.0 kg", "Enamel-coated steel"),
-    },
-    "colour-kettle",
-    "2.0 L",
-    [
-      { id: "colour-kettle-terracotta", color: "Terracotta", tone: "terracotta" },
-      { id: "colour-kettle-sage", color: "Sage", tone: "sage" },
-      { id: "colour-kettle-cream", color: "Cream", tone: "stone" },
-      { id: "colour-kettle-black", color: "Black", tone: "obsidian" },
-      { id: "colour-kettle-cobalt", color: "Cobalt", tone: "cobalt" },
-    ],
-  ),
-  ...colourways(
-    {
-      name: "Pour-Over Kettle",
-      category: "kettles",
-      price: 4900,
-      kind: "gooseneck",
-      description:
-        "A slim kettle with a long gooseneck spout for a slow, steady pour over coffee or green tea. Works on gas, electric and induction.",
-      highlights: ["Gooseneck spout for a controlled pour", "Thick base for gas, electric and induction", "Stay-cool handle"],
-      specs: KETTLE_SPECS("1.0 L", "18 cm", "650 g", "18/8 stainless steel"),
-    },
-    "pour-over-kettle",
-    "1.0 L",
-    [
-      { id: "pour-over-kettle", color: "Brushed steel", tone: "steel" },
-      { id: "pour-over-kettle-black", color: "Matte black", tone: "obsidian" },
-    ],
-  ),
-
-  /* ---------------------------------------------------------------- Flasks & Bottles */
-  {
-    id: "thermal-flask-750",
-    name: "Thermal Flask",
-    subtitle: "750 ml · Brushed steel",
-    category: "flasks",
-    price: 4500,
-    kind: "flask",
-    tone: "steel",
-    description:
-      "A double-wall vacuum flask in brushed stainless steel. Keeps water cold for 24 hours and chai hot for 12, and the outside never sweats.",
-    highlights: [
-      "Double-wall vacuum insulation — 24h cold, 12h hot",
-      "Leak-proof screw cap with silicone seal",
-      "18/8 food-grade stainless steel",
-    ],
-    specs: [
-      { label: "Capacity", value: "750 ml" },
-      { label: "Height", value: "27.5 cm" },
-      { label: "Weight", value: "390 g" },
-      { label: "Material", value: "18/8 stainless steel" },
-      { label: "Care", value: "Hand wash" },
-    ],
-  },
-  {
-    id: "thermal-flask-500",
-    name: "Thermal Flask Compact",
-    subtitle: "500 ml · Matte black",
-    category: "flasks",
-    price: 3800,
-    kind: "flask",
-    tone: "obsidian",
-    description:
-      "The same vacuum insulation in a shorter size that fits a school bag or a car cup holder. The matte finish hides fingerprints and scuffs.",
-    highlights: ["Double-wall vacuum insulation — 24h cold, 12h hot", "Matte powder coat, scratch resistant", "Leak-proof screw cap"],
-    specs: [
-      { label: "Capacity", value: "500 ml" },
-      { label: "Height", value: "21 cm" },
-      { label: "Weight", value: "310 g" },
-      { label: "Material", value: "18/8 stainless steel" },
-      { label: "Care", value: "Hand wash" },
-    ],
-  },
-  ...colourways(
-    {
-      name: "Commuter Bottle",
-      category: "flasks",
-      price: 3200,
-      kind: "bottle",
-      description:
-        "A slim insulated bottle with a carry loop on the cap, in five colours. The wide mouth takes ice cubes and is easy to clean.",
-      highlights: ["Double-wall vacuum insulation — 18h cold, 8h hot", "Carry loop cap, one-hand opening", "Wide mouth for ice and cleaning"],
-      specs: [
-        { label: "Capacity", value: "420 ml" },
-        { label: "Height", value: "22 cm" },
-        { label: "Weight", value: "260 g" },
-        { label: "Material", value: "18/8 stainless steel" },
-        { label: "Care", value: "Hand wash" },
-      ],
-    },
-    "commuter-bottle",
-    "420 ml",
-    [
-      { id: "commuter-bottle", color: "Stone white", tone: "stone" },
-      { id: "commuter-bottle-sage", color: "Sage", tone: "sage" },
-      { id: "commuter-bottle-terracotta", color: "Terracotta", tone: "terracotta" },
-      { id: "commuter-bottle-sand", color: "Sand", tone: "sand" },
-      { id: "commuter-bottle-cobalt", color: "Cobalt", tone: "cobalt" },
-    ],
-  ),
-  {
-    id: "table-jug",
-    name: "Table Jug",
-    subtitle: "1.0 L · Steel & wooden lid",
-    category: "flasks",
-    price: 6500,
-    kind: "jug",
-    tone: "steel",
-    description:
-      "A vacuum jug for chai or coffee at the table. Pours without dripping and keeps a full jug hot through a long breakfast.",
-    highlights: ["Double-wall vacuum insulation — 12h hot, 24h cold", "Drip-free pouring spout", "Wooden lid with silicone seal"],
-    specs: [
-      { label: "Capacity", value: "1.0 L" },
-      { label: "Height", value: "24 cm" },
-      { label: "Weight", value: "720 g" },
-      { label: "Material", value: "18/8 stainless steel, wood" },
-      { label: "Care", value: "Hand wash" },
-    ],
-  },
 ];
 
 export const PRODUCT_BY_ID = new Map(PRODUCTS.map((p) => [p.id, p]));
@@ -495,15 +320,15 @@ export function familiesIn(category: Category): Product[][] {
 /** Picked by the client for the home page carousel. */
 export const TOP_SELLING = [
   "glass-dinner-set",
-  "thermal-flask-750",
-  "colour-kettle-terracotta",
   "glass-tea-set",
-  "commuter-bottle-sage",
   "rib-tumbler",
   "glass-teapot",
-  "pour-over-kettle",
   "tea-cup-saucer",
   "pour-carafe",
+  "glass-mug",
+  "double-wall-glass",
+  "glass-water-set",
+  "glass-serving-bowl",
 ].map((id) => {
   const p = PRODUCT_BY_ID.get(id);
   if (!p) throw new Error(`Unknown product: ${id}`);
@@ -512,10 +337,10 @@ export const TOP_SELLING = [
 
 export const COLLECTION_BY_SLUG = new Map(COLLECTIONS.map((c) => [c.slug, c]));
 
-/** A collection's own page: /shop/kettles */
+/** A collection's own page: /shop/tea-wares */
 export const collectionHref = (id: Category) => `/shop/${COLLECTION_BY_ID.get(id)?.slug ?? ""}`;
 
-/** A product's page, inside its collection: /shop/kettles/colour-kettle-sage */
+/** A product's page, inside its collection: /shop/tea-wares/glass-mug */
 export const productHref = (p: Product) => `${collectionHref(p.category)}/${p.id}`;
 
 /** All colours of a product (just the product itself when it has none). */
