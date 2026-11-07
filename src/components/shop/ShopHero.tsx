@@ -7,25 +7,37 @@ import { useEffect, useRef, useState } from "react";
 import { GroupArt } from "@/components/art/ProductArt";
 import { EASE } from "@/lib/motion";
 import { COLLECTIONS, collectionHref } from "@/lib/products";
+import type { Category } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const CYCLE_MS = 4200;
 const pad = (n: number) => String(n).padStart(2, "0");
 
-/** Shop opener: the three collections as panels that open up on hover; each opens its collection page. */
-export function ShopHero() {
+/**
+ * Shop opener: the collections as panels that open up on hover. With `onPick`, a plain click shows that
+ * collection's products further down this page instead of leaving it (ctrl/cmd-click still opens the
+ * collection page in a new tab).
+ */
+export function ShopHero({ picked, onPick }: { picked?: Category | null; onPick?: (id: Category) => void }) {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const inView = useInView(ref, { amount: 0.3 });
   const [active, setActive] = useState(0);
   const [hold, setHold] = useState(false);
 
-  // Slowly walks through the panels until someone points at one.
+  const pickedIndex = picked ? COLLECTIONS.findIndex((c) => c.id === picked) : -1;
+  // Slowly walks through the panels until someone points at or picks one.
   useEffect(() => {
-    if (reduce || hold || !inView) return;
+    if (reduce || hold || !inView || pickedIndex >= 0) return;
     const t = setInterval(() => setActive((a) => (a + 1) % COLLECTIONS.length), CYCLE_MS);
     return () => clearInterval(t);
-  }, [reduce, hold, inView]);
+  }, [reduce, hold, inView, pickedIndex]);
+
+  const click = (id: Category) => (e: React.MouseEvent) => {
+    if (!onPick || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
+    onPick(id);
+  };
 
   return (
     <section
@@ -45,27 +57,19 @@ export function ShopHero() {
           >
             <span className="display block text-[clamp(4rem,9vw,8.5rem)]">Order</span>
             <span className="mt-2 block font-serif text-[clamp(1.5rem,2.6vw,2.375rem)] leading-[1.15] tracking-[-0.01em] italic">
-              pick a collection to start
+              select a collection to filter
             </span>
           </motion.h1>
-          <motion.div
-            className="lg:col-span-5 lg:max-w-[26rem] lg:justify-self-end lg:pb-2"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
-          >
-            <p className="text-[16px] leading-relaxed text-white/85">
-              Pick a collection to see everything in it, add what you like to your cart and check out when you&apos;re
-              ready.
-            </p>
-          </motion.div>
         </div>
 
         {/* Desktop: panels share the row; the active one opens wide. */}
         <ul
           className="mt-10 hidden min-h-[22rem] flex-1 gap-2 lg:flex"
           onPointerEnter={(e) => e.pointerType === "mouse" && setHold(true)}
-          onPointerLeave={() => setHold(false)}
+          onPointerLeave={() => {
+            setHold(false);
+            if (pickedIndex >= 0) setActive(pickedIndex);
+          }}
           onFocus={() => setHold(true)}
           onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setHold(false)}
         >
@@ -81,11 +85,15 @@ export function ShopHero() {
               >
                 <Link
                   href={collectionHref(c.id)}
+                  onClick={click(c.id)}
+                  aria-controls={onPick ? "shop-products" : undefined}
+                  aria-current={picked === c.id ? "true" : undefined}
                   onPointerEnter={() => setActive(i)}
                   onFocus={() => setActive(i)}
                   className={cn(
                     "group absolute inset-0 overflow-hidden rounded-[4px] ring-1 transition-[background-color,box-shadow] duration-500 ring-inset",
                     on ? "bg-white/[0.1] ring-white/30" : "bg-white/[0.05] ring-white/15",
+                    picked === c.id && "ring-2 ring-white",
                   )}
                 >
                   <motion.span
@@ -130,23 +138,27 @@ export function ShopHero() {
           })}
         </ul>
 
-        {/* Phones and tablets: a swipeable row of the same panels. */}
-        <ul className="-mx-5 mt-8 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:hidden [&::-webkit-scrollbar]:hidden">
+        {/* Phones and tablets: compact tiles, all three on screen at once. */}
+        <ul className="mt-8 grid gap-3 sm:grid-cols-3 lg:hidden">
           {COLLECTIONS.map((c, i) => (
-            <li key={c.id} className="w-[min(78vw,20rem)] shrink-0 snap-start">
+            <li key={c.id}>
               <Link
                 href={collectionHref(c.id)}
-                className="relative block aspect-[4/5] overflow-hidden rounded-[4px] bg-white/[0.08] ring-1 ring-white/20 ring-inset"
+                onClick={click(c.id)}
+                aria-controls={onPick ? "shop-products" : undefined}
+                aria-current={picked === c.id ? "true" : undefined}
+                className={cn(
+                  "relative flex h-32 items-center overflow-hidden rounded-[10px] ring-inset transition-[background-color,box-shadow] duration-300 sm:h-auto sm:aspect-[4/5] sm:flex-col sm:items-stretch",
+                  picked === c.id ? "bg-white/[0.16] ring-2 ring-white" : "bg-white/[0.08] ring-1 ring-white/20",
+                )}
               >
-                <span aria-hidden className="absolute inset-x-[4%] top-[12%] bottom-[24%]">
+                <span className="relative z-10 min-w-0 flex-1 px-4 sm:absolute sm:inset-x-4 sm:bottom-4 sm:px-0">
+                  <span className="block font-mono text-[11px] tracking-[0.06em] text-white/80 tabular-nums">{pad(i + 1)}</span>
+                  <span className="mt-1 block font-display text-[21px] leading-tight font-bold tracking-[-0.02em]">{c.label}</span>
+                  <span className="mt-0.5 block font-serif text-[15px] text-white/85 italic">{c.tagline}</span>
+                </span>
+                <span aria-hidden className="relative h-full w-[46%] shrink-0 py-3 pr-3 sm:absolute sm:inset-x-[4%] sm:top-[10%] sm:bottom-[30%] sm:h-auto sm:w-auto sm:p-0">
                   <GroupArt collection={c.id} />
-                </span>
-                <span className="absolute top-4 left-4 font-mono text-[11px] tracking-[0.06em] text-white/80 tabular-nums">
-                  {pad(i + 1)}
-                </span>
-                <span className="absolute inset-x-4 bottom-4">
-                  <span className="block font-display text-[24px] leading-tight font-bold tracking-[-0.02em]">{c.label.replace("& ", "& ")}</span>
-                  <span className="mt-0.5 block font-serif text-[17px] text-white/85 italic">{c.tagline}</span>
                 </span>
               </Link>
             </li>

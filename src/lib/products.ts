@@ -307,10 +307,11 @@ export const PRODUCT_BY_ID = new Map(PRODUCTS.map((p) => [p.id, p]));
 /** The shop shows one card per family: colour variants grouped, everything else on its own. */
 export const familyKey = (p: Product) => p.family ?? p.id;
 
-export function familiesIn(category: Category): Product[][] {
+/** One collection's families, or every family in the shop (in collection order) when `category` is left out. */
+export function familiesIn(category?: Category): Product[][] {
   const groups = new Map<string, Product[]>();
   for (const p of PRODUCTS) {
-    if (p.category !== category) continue;
+    if (category && p.category !== category) continue;
     const key = familyKey(p);
     groups.set(key, [...(groups.get(key) ?? []), p]);
   }

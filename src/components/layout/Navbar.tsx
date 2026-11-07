@@ -98,9 +98,6 @@ export function Navbar({ variant = "home" }: { variant?: NavVariant }) {
           aria-label={variant === "home" ? "EDGE GLASSWARE, back to top" : "EDGE GLASSWARE home"}
         >
           <span className="display block text-[23px] tracking-[-0.01em]">EDGE GLASSWARE</span>
-          <span className="mt-1 block font-mono text-[9.5px] tracking-[0.06em] whitespace-nowrap uppercase opacity-80">
-            Tea · Drink · Dinner
-          </span>
         </Link>
 
         <nav aria-label="Collections" className="hidden lg:block">

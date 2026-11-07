@@ -11,14 +11,14 @@ import { COLLECTIONS, collectionHref, familiesIn, familyKey, PRODUCT_BY_ID } fro
 import type { Category, Product } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-/** A collection's products as a grid of cards, colours grouped per card. `exclude` drops one family (the product being viewed). */
+/** A collection's products (or every product, with no `collection`) as a grid of cards, colours grouped per card. `exclude` drops one family (the product being viewed). */
 export function CollectionProducts({
   collection,
   exclude,
   limit,
   className,
 }: {
-  collection: Category;
+  collection?: Category;
   exclude?: string;
   limit?: number;
   className?: string;

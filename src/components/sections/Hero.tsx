@@ -269,8 +269,12 @@ export function Hero() {
             </Swap>
             {/* On desktop the button hangs below the line, so both poster words sit on the same baseline. */}
             <div className="mt-6 flex justify-end lg:absolute lg:top-[calc(100%-2.5rem)] lg:right-0">
-              <Link href={collectionHref(c.id)} className={buttonClass("inverse", "group h-11 shrink-0 px-5")}>
-                Shop {c.label}
+              <Link
+                href={collectionHref(c.id)}
+                aria-label={`View details: ${c.label}`}
+                className={buttonClass("inverse", "group h-11 shrink-0 px-5")}
+              >
+                View details
                 <ArrowRight
                   aria-hidden
                   className="size-4 transition-transform duration-300 group-hover:translate-x-0.5"

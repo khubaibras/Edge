@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer, OrderSteps } from "@/components/sections/Footer";
-import { ShopHero } from "@/components/shop/ShopHero";
+import { ShopBrowser } from "@/components/shop/ShopBrowser";
 
 export const metadata: Metadata = {
   title: "Shop — EDGE GLASSWARE",
@@ -9,13 +9,13 @@ export const metadata: Metadata = {
     "Tea, drink and dinner wares in glass. Pick a collection, add to cart and check out.",
 };
 
-/** Shop landing: the three collections, each opening its own page. */
+/** Shop landing: every product below the collections; picking a collection filters the list. */
 export default function ShopPage() {
   return (
     <>
       <Navbar variant="shop" />
       <main>
-        <ShopHero />
+        <ShopBrowser />
         <section aria-label="How ordering works" className="py-16 sm:py-20">
           <div className="shell">
             <OrderSteps id="how-to-order" />

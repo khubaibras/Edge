@@ -8,7 +8,6 @@ import { Footer } from "@/components/sections/Footer";
 import { Breadcrumbs } from "@/components/shop/Breadcrumbs";
 import { CollectionBar, CollectionProducts } from "@/components/shop/CollectionProducts";
 import { ProductDetails } from "@/components/shop/ProductDetails";
-import { ScrollReset } from "@/components/shop/ScrollReset";
 import { ShopSkeleton } from "@/components/shop/ShopSkeleton";
 import { Reveal } from "@/components/ui/primitives";
 import {
@@ -62,7 +61,6 @@ async function ProductContent({ params }: Pick<PageProps<"/shop/[collection]/[pr
 
   return (
     <>
-      <ScrollReset />
       <section aria-label={p.name} className="pt-8 pb-16 sm:pt-10 sm:pb-20 lg:pb-24">
         <div className="shell">
           <Breadcrumbs

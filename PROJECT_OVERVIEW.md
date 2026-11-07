@@ -59,7 +59,7 @@ All paths are under `src/components/`.
 | Section | Anchor | What it does | Code |
 |---|---|---|---|
 | Nav | | The three collections (each opens that collection's page), a **Wholesale** link and a **Shop now** button. Once the cart has something in it, the button becomes **Cart**. On phones, a menu with the collections, page links and WhatsApp. | `layout/Navbar.tsx` |
-| Hero | `#top` | Cobalt poster, one slide per collection. Each shows a group of products (e.g. the teapot, cups and a mug) between two big words that name the collection, and a **Shop {collection}** button. Arrows, dots, swipe or arrow keys; autoplay pauses on hover, keyboard focus, while the cart is open, and for reduced-motion users. | `sections/Hero.tsx` |
+| Hero | `#top` | Cobalt poster, one slide per collection. Each shows a group of products (e.g. the teapot, cups and a mug) between two big words that name the collection, and a **View details** button that opens the collection page. Arrows, dots, swipe or arrow keys; autoplay pauses on hover, keyboard focus, while the cart is open, and for reduced-motion users. | `sections/Hero.tsx` |
 | Why us | `#why` | Four numbered reasons (glass crockery, sets for less, ordering on WhatsApp, cash on delivery) with a picture for each. Steps through on its own while in view. | `sections/WhyUs.tsx` |
 | Top selling | `#top-selling` | Endless row of products that moves on its own and stops while pointed at. Each card opens that product's page. | `sections/TopSelling.tsx` |
 | Our collections | `#collections` | One row per collection, image and text alternating sides, with **View collection**. | `sections/Collections.tsx` |
@@ -76,13 +76,13 @@ A query form for bulk buyers: name, business, mobile, city, the collections they
 
 | Page | What it shows | Code |
 |---|---|---|
-| `/shop` | "Order" headline and five collection panels; each opens that collection's page. The active panel opens wide; they cycle slowly until you point at one. On phones they become a swipeable row. Then the four ordering steps. | `app/shop/page.tsx`, `shop/ShopHero.tsx` |
-| `/shop/<collection>` | Name, tagline, description and group picture, then every product in that collection as cards (Add to cart, Details), the other four collections, and the ordering steps. | `app/shop/[collection]/page.tsx`, `shop/CollectionProducts.tsx`, `shop/ProductCard.tsx` |
+| `/shop` | "Order" headline and the three collection panels, then **every product**. Clicking a panel filters the products to that collection without leaving the page (clicking it again shows everything); the pick is kept in the address (`/shop#tea-wares`) so a refresh or shared link reopens it, and ctrl/cmd-click still opens the collection page. The active panel opens wide; they cycle slowly until you point at or pick one. On phones they are three compact tiles. Then the four ordering steps. | `app/shop/page.tsx`, `shop/ShopBrowser.tsx`, `shop/ShopHero.tsx` |
+| `/shop/<collection>` | A cobalt poster hero (the group picture over the collection name as a watermark, with a **Scroll to explore** cue), a feature section with four points around one of the pieces, then every product in that collection as cards (Add to cart, Details), the other collections, and the ordering steps. | `app/shop/[collection]/page.tsx`, `shop/CollectionHero.tsx`, `shop/GlassFeatures.tsx`, `shop/CollectionProducts.tsx` |
 | `/shop/<collection>/<product id>` | Large picture with two views, name, price, colours, description, quantity and Add to cart, highlights and specs; then more from the same collection. Each colour is its own page, so the colour dots are links. | `app/shop/[collection]/[product]/page.tsx`, `shop/ProductDetails.tsx` |
 
 On every shop page the nav underlines the current collection and always shows **Cart**; on phones, sticky collection pills sit under the nav (`CollectionBar` in `shop/CollectionProducts.tsx`). The cart is a side panel (cart → delivery details → review → placed), mounted once for the whole site: `cart/CartDrawer.tsx`, `cart/CheckoutForm.tsx`, `cart/checkout.ts`, `Providers.tsx`. Its buttons say **Checkout** and **Place order**; placing the order opens the WhatsApp message.
 
-Collection slugs are in `COLLECTIONS`; links are built with `collectionHref` and `productHref` in `src/lib/products.ts`. All shop pages are prerendered at build time (`generateStaticParams`). The part of a collection or product page that reads the URL sits inside `<Suspense>` (with `shop/ShopSkeleton.tsx` as the placeholder), so navigations show the page frame straight away, as Next's instant-navigation check asks. `shop/ScrollReset.tsx` opens every collection and product page at its top; picking another colour on a product page keeps the scroll position.
+Collection slugs are in `COLLECTIONS`; links are built with `collectionHref` and `productHref` in `src/lib/products.ts`. All shop pages are prerendered at build time (`generateStaticParams`). `shop/ScrollReset.tsx` is mounted once in `Providers`, so every page opens at its top; back and forward keep the reader's position. The part of a collection or product page that reads the URL sits inside `<Suspense>` (with `shop/ShopSkeleton.tsx` as the placeholder), so navigations show the page frame straight away, as Next's instant-navigation check asks. Picking another colour on a product page keeps the scroll position.
 
 ## Where to change things
 
@@ -98,7 +98,7 @@ Collection slugs are in `COLLECTIONS`; links are built with `collectionHref` and
 | Why us reasons | `REASONS` in `src/components/sections/WhyUs.tsx` |
 | Ordering steps, questions, footer links | `STEPS`, `FAQS`, `LINKS` in `src/components/sections/Footer.tsx` |
 | Group pictures (which pieces, colours, placement) | `ENSEMBLES` in `src/components/art/sets.tsx` |
-| Backdrop colours and words behind group pictures | `SCENES` in `src/components/art/Scene.tsx` |
+| Backdrop colours behind group pictures | `SCENES` in `src/components/art/Scene.tsx` |
 | Colours and fonts | `src/app/globals.css` (`@theme` tokens), `src/app/layout.tsx` (`next/font`) |
 | Page titles and descriptions | `metadata` in `src/app/layout.tsx`, `src/app/shop/page.tsx` and `src/app/wholesale/page.tsx`; collection and product pages build theirs from the catalog |
 
@@ -113,7 +113,7 @@ There are no photos. Each product is drawn in code as an SVG "studio render" in 
 - `sets.tsx`: products made of several pieces (tea set, water set, dinner set, dessert bowls) and the three collection group pictures (`ENSEMBLES`). Each group has a measured frame (`box`) so every group fills its space alike.
 - `shared.tsx`: finishes (`TONES`: clear and smoke glass, and steel for the teapot infuser), swatch colours and shadows.
 - `ProductArt.tsx`: `ProductArt` draws one product; `GroupArt` draws a collection's group.
-- `Scene.tsx`: a group picture on a wall-and-table backdrop.
+- `Scene.tsx`: a group picture on a soft, light wall-and-table backdrop.
 
 A product picks its drawing with `kind` and its finish with `tone`. Every drawing has a front view and an `alt` view, shown on hover.
 
@@ -160,6 +160,7 @@ Fonts are downloaded from Google Fonts by `next/font` at build time, so the buil
    - Home became a brand page: a cleaner hero with collection groups (no count, description, price or delivery pill), Why us, Top selling, Our collections (replacing Ideas), and an "Order today" band after the questions. Delivery details moved into the questions. "How to order" left the nav.
    - The shop and cart moved to the new order page (`/shop`), with its own hero and a shelf per collection. Checkout is unchanged.
 5. **Kettles, flasks and bottles removed (7 Nov 2026):** the Kettles and Flasks & Bottles collections, their products (including the table jug), their drawings and every mention of them in the copy were taken out. The store now sells three glass collections.
+6. **Brought in line with KROMA (7 Nov 2026):** the design work done on the KROMA store was carried over, keeping the glass catalog: header with just the wordmark, light collection backdrops without background words, **View details** on the home hero, an all-products shop page that filters by collection, collection pages with a poster hero and a feature section, and scroll reset on every page.
 
 ## Before launch
 

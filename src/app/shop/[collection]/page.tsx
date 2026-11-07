@@ -6,12 +6,20 @@ import { Suspense } from "react";
 import { Scene } from "@/components/art/Scene";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer, OrderSteps } from "@/components/sections/Footer";
-import { Breadcrumbs } from "@/components/shop/Breadcrumbs";
 import { CollectionBar, CollectionProducts } from "@/components/shop/CollectionProducts";
-import { ScrollReset } from "@/components/shop/ScrollReset";
+import { CollectionHero } from "@/components/shop/CollectionHero";
+import { GlassFeatures } from "@/components/shop/GlassFeatures";
 import { ShopSkeleton } from "@/components/shop/ShopSkeleton";
 import { Reveal } from "@/components/ui/primitives";
 import { COLLECTION_BY_SLUG, COLLECTIONS, collectionHref } from "@/lib/products";
+import type { Category } from "@/lib/types";
+
+/** The word behind each collection's poster hero. */
+const HERO_MARKS: Record<Category, string> = {
+  tea: "Tea Wares",
+  drink: "Drink Wares",
+  dinner: "Dinner Wares",
+};
 
 export function generateStaticParams() {
   return COLLECTIONS.map((c) => ({ collection: c.slug }));
@@ -43,7 +51,7 @@ export default function CollectionPage({ params }: PageProps<"/shop/[collection]
   );
 }
 
-/** The collection named in the URL: its products, then the other collections. */
+/** The collection named in the URL: a poster hero, what makes the range good, its products, then the other collections. */
 async function CollectionContent({ params }: Pick<PageProps<"/shop/[collection]">, "params">) {
   const c = COLLECTION_BY_SLUG.get((await params).collection);
   if (!c) notFound();
@@ -51,26 +59,17 @@ async function CollectionContent({ params }: Pick<PageProps<"/shop/[collection]"
 
   return (
     <>
-      <ScrollReset />
-      <section aria-labelledby="collection-title" className="pt-10 pb-16 sm:pt-12 sm:pb-20 lg:pt-14 lg:pb-24">
+      <CollectionHero collection={c.id} mark={HERO_MARKS[c.id]} />
+      <GlassFeatures collection={c.id} />
+      <section aria-label={`${c.label} products`} className="pt-10 pb-16 sm:pt-12 sm:pb-20 lg:pt-14 lg:pb-24">
         <div className="shell">
-          <Breadcrumbs trail={[{ label: "Shop", href: "/shop" }, { label: c.label }]} />
-          <div className="mt-8 grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-12">
-            <Reveal className="lg:col-span-5">
-              <h1 id="collection-title" className="display text-[clamp(3rem,6.4vw,6rem)]">
-                {c.label}
-              </h1>
-              <p className="mt-3 font-serif text-[clamp(1.375rem,2.2vw,2rem)] leading-[1.15] tracking-[-0.01em] text-ink-2 italic">
-                {c.tagline}
-              </p>
-              <p className="mt-5 max-w-[42ch] text-[16px] leading-relaxed text-mute">{c.description}</p>
-            </Reveal>
-            <Reveal delay={0.1} className="lg:col-span-7">
-              <Scene collection={c.id} className="aspect-[16/10]" />
-            </Reveal>
-          </div>
-
-          <CollectionProducts collection={c.id} className="mt-16 lg:mt-20" />
+          <Reveal>
+            <h2 className="font-display text-[clamp(1.75rem,2.8vw,2.5rem)] leading-tight font-bold tracking-[-0.02em]">
+              Shop {c.label.toLowerCase()}
+            </h2>
+            <p className="mt-2 max-w-[52ch] text-[15px] text-mute">{c.description}</p>
+          </Reveal>
+          <CollectionProducts collection={c.id} className="mt-8" />
         </div>
       </section>
 
